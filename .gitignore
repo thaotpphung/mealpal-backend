@@ -1,0 +1,15 @@
+# dependencies
+dist
+/dist
+node_modules
+/node_modules
+
+# misc
+.DS_Store
+.env
+
+# production
+/build
+
+#npm
+package-lock.json
