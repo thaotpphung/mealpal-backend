@@ -11,4 +11,4 @@ const recipeSchema = mongoose.Schema({
   instructions: [{ type: String }]
 });
 
-export default mongoose.model("Recipe", userSchema);
+export default mongoose.model("Recipe", recipeSchema);
