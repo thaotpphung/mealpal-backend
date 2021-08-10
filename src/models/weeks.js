@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const weekSchema = mongoose.Schema({
-  name: { type: String, required: true },
+  weekName: { type: String, required: true },
   planid: { type: String, required:  true},
   days: [
     {

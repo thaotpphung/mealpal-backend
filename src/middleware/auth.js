@@ -27,6 +27,6 @@ const auth = async (req, res, next) => {
 
 // is admin 
 
-// is student 
+// is moderator
 
 export default auth;

@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const recipeSchema = mongoose.Schema({
-  name: { type: String, required: true },
-  ingredients: [
+  recipeName: { type: String, required: true },
+  recipeIngredients: [
     {
       name: String,
       quantity: Number,
     },
   ],
-  instructions: [{ type: String }]
+  recipeInstructions: { type: [String], default: [] }
 });
 
 export default mongoose.model("Recipe", recipeSchema);

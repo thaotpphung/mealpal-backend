@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import UserModal from "../models/user.js";
+import UserModal from "../models/users.js";
 dotenv.config();
 
 export const signin = async (req, res) => {
+  console.log("SIGN IN");
   const { email, password } = req.body;
   try {
     const oldUser = await UserModal.findOne({ email });
@@ -28,7 +29,8 @@ export const signin = async (req, res) => {
   }
 };
 
-export const signup = async (req, res) => {
+export const register = async (req, res) => {
+  console.log("REGISTER");
   const { email, password, firstName, lastName } = req.body;
   try {
     const oldUser = await UserModal.findOne({ email });
