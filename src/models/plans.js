@@ -14,8 +14,8 @@ const planSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  categories: { type: [String], default: [] },
-  likes: { type: [String], default: [] }
+  planTags: { type: [String], default: []},
+  likes: { type: [String], default: [] },
 });
 
 export default mongoose.model("Plan", planSchema);

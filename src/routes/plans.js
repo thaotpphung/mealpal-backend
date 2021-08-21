@@ -5,9 +5,9 @@ import { getPlans, getPlan, createPlan, updatePlan, deletePlan } from '../contro
 const router = express.Router();
 import auth from "../middleware/auth.js";
 
+router.post('/', auth, createPlan);
 router.get('/', getPlans);
 router.get('/:id', auth, getPlan);
-router.post('/', auth, createPlan);
 router.put('/:id', auth, updatePlan);
 router.delete('/:id', auth, deletePlan);
 

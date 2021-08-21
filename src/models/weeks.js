@@ -5,10 +5,15 @@ const weekSchema = mongoose.Schema({
   planid: { type: String, required:  true},
   days: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Meal"
+      weekDay:  { type: String, required:  true},
+      meals: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Meal"
+        }
+      ]
     }
-  ]
+  ],
 });
 
 export default mongoose.model("Week", weekSchema);
