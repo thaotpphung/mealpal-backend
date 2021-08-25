@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 const weekSchema = mongoose.Schema({
   weekName: { type: String, required: true },
-  planid: { type: String, required:  true},
+  planId: { type: String, required:  true},
   days: [
     {
-      weekDay:  { type: String, required:  true},
+      weekDay:  { type: String},
       meals: [
         {
           type: mongoose.Schema.Types.ObjectId,

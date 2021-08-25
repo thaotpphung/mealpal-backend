@@ -5,11 +5,7 @@ const router = express.Router();
 
 export const createPlan = async (req, res) => {
     const plan = req.body;
-
-    console.log('creating plan', plan);
-
-    const newPlan = new Plan({ ...plan, userId: req.userId, planCreatedTime: new Date().toISOString()})
-
+    const newPlan = new Plan({ ...plan, userId: req.userId, planCreatedTime: new Date().toISOString()});
     try {
         await newPlan.save();
         res.status(201).json(newPlan);
@@ -19,15 +15,18 @@ export const createPlan = async (req, res) => {
     }
 }
 
-export const getPlans = async (req, res) => { 
+export const getPlansByUserId = async (req, res) => { 
     try {
-        const plans = await Plan.find({userId: req.userId});
-                
+        const plans = await Plan.find({ userId: req.userId });
         res.status(200).json(plans);
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 }
+
+
+
+
 
 export const getPlan = async (req, res) => { 
     const { id } = req.params;

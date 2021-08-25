@@ -2,12 +2,15 @@ import mongoose from "mongoose";
 
 const daySchema = mongoose.Schema({
   weekId: { type: String, required: true },
-  planid: { type: String, required:  true},
   weekDay: { type: String, required:  true},
   meals: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Meal"
+      mealName: { type: String, required:  true},
+      food: [
+        {
+          name: { type: String, required:  true},
+        }
+      ]
     }
   ]
 });

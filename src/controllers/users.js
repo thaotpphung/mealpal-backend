@@ -21,9 +21,9 @@ export const signin = async (req, res) => {
     const token = jwt.sign(
       { email: oldUser.email, id: oldUser._id },
       process.env.JWT_SECRET,
-      { expiresIn: "24h" }
+      // { expiresIn: "24h" }
     );
-    res.status(200).json({ result: oldUser, token });
+    res.status(200).json({ result: {...oldUser, currentPlan: '612692ee35f6357e74a0cfa2', currentWeek: '61269701b35fba7eb585b7e6'}, token });
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -54,3 +54,13 @@ export const register = async (req, res) => {
     console.log(error);
   }
 };
+
+export const setCurrentPlan = async (req, res) => {
+  const { planId, weekId } = req.body;
+  const { userId } = req;
+
+  await User.findByIdAndUpdate(userId, { $set: { currentPlan: planId, currentWeek: weekId }});
+
+  res.status(200).json({message: "Success"});
+
+}
