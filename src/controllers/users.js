@@ -1,8 +1,8 @@
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import User from "../models/users.js";
-import { getToken } from "../utils/authUtils.js";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+import User from '../models/users.js';
+import { getToken } from '../utils/authUtils.js';
 
 dotenv.config();
 
@@ -16,11 +16,11 @@ export const signin = async (req, res) => {
     }
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
     res.status(200).json({ result: user, token: getToken(user) });
   } catch (err) {
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: 'Something went wrong' });
   }
 };
 
@@ -29,7 +29,7 @@ export const register = async (req, res) => {
   try {
     const oldUser = await User.findOne({ email });
     if (oldUser)
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: 'User already exists' });
     const hashedPassword = await bcrypt.hash(password, 12);
     const result = await User.create({
       email,
@@ -38,22 +38,24 @@ export const register = async (req, res) => {
     });
     res.status(201).json({ result, token: getToken(result) });
   } catch (error) {
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: 'Something went wrong' });
     console.log(error);
   }
 };
 
 export const setCurrentPlan = async (req, res) => {
   const { planId, weekId } = req.body;
-  const { userId } = req;
-  const user = await User.findByIdAndUpdate(userId, {
-    $set: { currentPlan: planId, currentWeek: weekId },
-  });
+  const user = await User.findByIdAndUpdate(
+    req.userId,
+    {
+      $set: { currentPlan: planId, currentWeek: weekId },
+    },
+    { new: true }
+  );
   res.status(200).json({ user });
 };
 
 export const getUser = async (req, res) => {
-  const { userId } = req;
-  const user = await User.findById(userId);
+  const user = await User.findById(req.userId);
   res.status(200).json({ user });
 };
