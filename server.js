@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoutes from "./src/routes/users.js";
 import planRoutes from "./src/routes/plans.js";
 import weekRoutes from "./src/routes/weeks.js";
+import dayRoutes from "./src/routes/days.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(cors());
 // routes
 app.use('/api/plans', planRoutes);
 app.use('/api/weeks', weekRoutes);
+app.use('/api/days', dayRoutes);
 app.use("/api/users", userRoutes);
 app.get('/', (req, res) => {
   res.send("Welcome to MealPal API!");

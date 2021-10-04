@@ -2,28 +2,23 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import User from "../models/users.js";
+import { getToken } from "../utils/authUtils.js";
+
 dotenv.config();
 
 export const signin = async (req, res) => {
-  console.log("SIGN IN");
   const { email, password } = req.body;
   try {
-    const oldUser = await User.findOne({ email });
-    if (!oldUser) {
+    const user = await User.findOne({ email });
+    if (!user) {
       console.log("user doesn't exists");
       return res.status(404).json({ message: "User doesn't exist" });
     }
-    const isPasswordCorrect = await bcrypt.compare(password, oldUser.password);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      console.log("invalid credentials");
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign(
-      { email: oldUser.email, id: oldUser._id },
-      process.env.JWT_SECRET,
-      // { expiresIn: "24h" }
-    );
-    res.status(200).json({ result: {...oldUser, currentPlan: '612692ee35f6357e74a0cfa2', currentWeek: '61269701b35fba7eb585b7e6'}, token });
+    res.status(200).json({ result: user, token: getToken(user) });
   } catch (err) {
     res.status(500).json({ message: "Something went wrong" });
   }
@@ -41,16 +36,9 @@ export const register = async (req, res) => {
       password: hashedPassword,
       fullName: `${firstName} ${lastName}`,
     });
-    const token = jwt.sign(
-      { email: result.email, id: result._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-    res.status(201).json({ result, token });
-    console.log("REGISTER SUCCESS", result.email);
+    res.status(201).json({ result, token: getToken(result) });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
-
     console.log(error);
   }
 };
@@ -58,9 +46,14 @@ export const register = async (req, res) => {
 export const setCurrentPlan = async (req, res) => {
   const { planId, weekId } = req.body;
   const { userId } = req;
+  const user = await User.findByIdAndUpdate(userId, {
+    $set: { currentPlan: planId, currentWeek: weekId },
+  });
+  res.status(200).json({ user });
+};
 
-  await User.findByIdAndUpdate(userId, { $set: { currentPlan: planId, currentWeek: weekId }});
-
-  res.status(200).json({message: "Success"});
-
-}
+export const getUser = async (req, res) => {
+  const { userId } = req;
+  const user = await User.findById(userId);
+  res.status(200).json({ user });
+};
