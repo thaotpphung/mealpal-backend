@@ -9,7 +9,10 @@ dotenv.config();
 export const signin = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+      .populate('currentPlan')
+      .populate('currentWeek')
+      .exec();
     if (!user) {
       console.log("user doesn't exists");
       return res.status(404).json({ message: "User doesn't exist" });
@@ -27,7 +30,10 @@ export const signin = async (req, res) => {
 export const register = async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
   try {
-    const oldUser = await User.findOne({ email });
+    const oldUser = await User.findOne({ email })
+      .populate('currentPlan')
+      .populate('currentWeek')
+      .exec();
     if (oldUser)
       return res.status(400).json({ message: 'User already exists' });
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -51,7 +57,10 @@ export const setCurrentPlan = async (req, res) => {
       $set: { currentPlan: planId, currentWeek: weekId },
     },
     { new: true }
-  );
+  )
+    .populate('currentPlan')
+    .populate('currentWeek')
+    .exec();
   res.status(200).json({ user });
 };
 

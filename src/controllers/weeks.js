@@ -2,14 +2,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Week from '../models/weeks.js';
 import Day from '../models/days.js';
+import Meal from '../models/meals.js';
+
 const router = express.Router();
 
 export const getWeekListByPlanId = async (req, res) => {
   try {
-    // console.log('get week by plan id');
-    // const newWeek = new Week({ weekName: 'test', planId: req.params.planId });
-    // await createInitialDays(newWeek._id);
-    // await newWeek.save();
     const weeks = await Week.find({ planId: req.params.planId });
     res.status(200).json(weeks);
   } catch (error) {
@@ -27,15 +25,14 @@ const createInitialDays = async (weekId) => {
     'Saturday',
     'Sunday',
   ];
-  const meals = [
-    { mealName: 'Breakfast', food: [] },
-    { mealName: 'Lunch', food: [] },
-    { mealName: 'Dinner', food: [] },
-  ];
+  const initalMeals = ['Break Fast', 'Lunch', 'Dinner'];
   try {
     weekDays.forEach(async (dayName) => {
-      const newDay = new Day({ dayName, meals, weekId });
+      const newDay = new Day({ dayName, weekId });
       await newDay.save();
+      initalMeals.forEach(async (mealName) => {
+        await Meal.create({ mealName, dayId: newDay._id });
+      });
     });
   } catch (error) {
     console.log(error);
@@ -46,9 +43,8 @@ const createInitialDays = async (weekId) => {
 export const createWeek = async (req, res) => {
   const week = req.body;
   const newWeek = new Week({ ...week });
-  await createInitialDays(newWeek._id);
-
   try {
+    await createInitialDays(newWeek._id);
     await newWeek.save();
     res.status(201).json(newWeek);
     console.log('Success saved new week', newWeek);

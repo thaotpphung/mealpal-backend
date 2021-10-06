@@ -1,10 +1,11 @@
 import express from 'express';
 
-import { getDayListByWeekId } from '../controllers/days.js';
+import { getDayListByWeekId, updateDay } from '../controllers/days.js';
 
 const router = express.Router();
-import auth from "../middleware/auth.js";
+import auth from '../middleware/auth.js';
 
 router.get('/:weekId', auth, getDayListByWeekId);
+router.put('/:dayId', auth, updateDay);
 
 export default router;

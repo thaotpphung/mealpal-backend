@@ -12,10 +12,6 @@ export const createPlan = async (req, res) => {
   });
   try {
     await newPlan.save();
-
-    // console.log('newplan', newPlan, 'is new ', req.body.isNewUser, newPlan._id);
-    // req.body.isNewUser ? await User.findByIdAndUpdate(req.userId, { $set: { currentPlan: newPlan._id }}) : void(0);
-
     res.status(201).json(newPlan);
   } catch (error) {
     res.status(409).json({ message: error.message });
