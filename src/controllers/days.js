@@ -6,23 +6,6 @@ import Recipe from '../models/meals.js';
 
 const router = express.Router();
 
-const saveFood = async (meals) => {
-  meals.forEach(async (meal) => {
-    const food = await Recipe.find({ mealId: meal._id });
-    meal.food = food;
-    console.log('meal.food', meal);
-  });
-};
-
-const saveDays = async (days) => {
-  days.forEach(async (day) => {
-    let meals = await Meal.find({ dayId: day._id });
-    await saveFood(meals);
-    console.log('meals', meals);
-    day.meals = meals;
-  });
-};
-
 export const getDayListByWeekId = async (req, res) => {
   try {
     let days = await Day.find({ weekId: req.params.weekId }).lean();
@@ -32,13 +15,12 @@ export const getDayListByWeekId = async (req, res) => {
         await Promise.all(
           meals.map(async (meal) => {
             const food = await Recipe.find({ mealId: meal._id });
-            meal.food = food;
+            meal.food = ['curry', 'omlette'];
           })
         );
         day.meals = meals;
       })
     );
-
     res.status(200).json(days);
   } catch (error) {
     res.status(404).json({ message: error.message });

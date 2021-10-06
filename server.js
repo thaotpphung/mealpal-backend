@@ -19,7 +19,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/days', dayRoutes);
-app.use('api/meals', mealRoutes);
+app.use('/api/meals', mealRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');
 });

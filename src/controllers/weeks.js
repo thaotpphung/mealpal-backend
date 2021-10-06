@@ -30,9 +30,11 @@ const createInitialDays = async (weekId) => {
     weekDays.forEach(async (dayName) => {
       const newDay = new Day({ dayName, weekId });
       await newDay.save();
-      initalMeals.forEach(async (mealName) => {
-        await Meal.create({ mealName, dayId: newDay._id });
-      });
+      await Promise.all(
+        initalMeals.map(async (mealName) => {
+          await Meal.create({ mealName, dayId: newDay._id });
+        })
+      );
     });
   } catch (error) {
     console.log(error);
@@ -47,7 +49,6 @@ export const createWeek = async (req, res) => {
     await createInitialDays(newWeek._id);
     await newWeek.save();
     res.status(201).json(newWeek);
-    console.log('Success saved new week', newWeek);
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
