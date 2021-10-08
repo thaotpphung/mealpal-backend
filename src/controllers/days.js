@@ -15,7 +15,7 @@ export const getDayListByWeekId = async (req, res) => {
         await Promise.all(
           meals.map(async (meal) => {
             const food = await Recipe.find({ mealId: meal._id });
-            meal.food = ['curry', 'omlette'];
+            meal.food = food;
           })
         );
         day.meals = meals;
@@ -30,7 +30,6 @@ export const getDayListByWeekId = async (req, res) => {
 export const updateDay = async (req, res) => {
   const { dayId } = req.params;
   const meals = req.body;
-  console.log(meals);
   if (!mongoose.Types.ObjectId.isValid(dayId))
     return res.status(404).send(`No plan with id: ${dayId}`);
 
@@ -55,7 +54,6 @@ export const updateDay = async (req, res) => {
     },
     { new: true }
   );
-  console.log(day);
   res.status(200).json({ message: 'success' });
 };
 

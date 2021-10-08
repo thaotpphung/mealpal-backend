@@ -10,7 +10,7 @@ export const createMeal = async (req, res) => {
     console.log('created meal', newMeal);
     const mealReturned = {
       _id: newMeal._id,
-      food: ['currey'],
+      food: [],
       mealName: newMeal.mealName,
       dayId: newMeal.dayId,
     };
@@ -32,6 +32,29 @@ export const deleteMeal = async (req, res) => {
     console.log(error);
     res.status(409).json({ message: error.message });
   }
+};
+
+export const updateMeal = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`No meal with id: ${id}`);
+
+    console.log('body', req.body);
+    await Meal.findByIdAndUpdate(
+      id,
+      {
+        $set: { food: req.body },
+      },
+      { new: true }
+    );
+    res.json({ message: 'Meal deleted successfully.' });
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({ message: error.message });
+  }
+
+  res.json(updatedPost);
 };
 
 export default router;
