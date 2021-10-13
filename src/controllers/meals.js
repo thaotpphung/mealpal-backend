@@ -7,7 +7,6 @@ export const createMeal = async (req, res) => {
   try {
     const meal = req.body;
     const newMeal = await Meal.create({ ...meal });
-    console.log('created meal', newMeal);
     const mealReturned = {
       _id: newMeal._id,
       food: [],
@@ -39,22 +38,18 @@ export const updateMeal = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`No meal with id: ${id}`);
-
-    console.log('body', req.body);
-    await Meal.findByIdAndUpdate(
+    const meal = await Meal.findByIdAndUpdate(
       id,
       {
         $set: { food: req.body },
       },
       { new: true }
     );
-    res.json({ message: 'Meal deleted successfully.' });
+    res.json({ message: 'Meal updated successfully' });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
   }
-
-  res.json(updatedPost);
 };
 
 export default router;

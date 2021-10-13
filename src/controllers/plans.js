@@ -39,15 +39,6 @@ export const getPlan = async (req, res) => {
   }
 };
 
-export const updatePlan = async (req, res) => {
-  // const { id } = req.params;
-  // const { title, message, creator, selectedFile, tags } = req.body;
-  // if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No plan with id: ${id}`);
-  // const updatedPlan = { creator, title, message, tags, selectedFile, _id: id };
-  // await Plan.findByIdAndUpdate(id, updatedPlan, { new: true });
-  // res.json(updatedPlan);
-};
-
 export const deletePlan = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))

@@ -49,18 +49,19 @@ export const register = async (req, res) => {
   }
 };
 
-export const setCurrentPlan = async (req, res) => {
-  const { planId, weekId } = req.body;
+export const setCurrentWeek = async (req, res) => {
+  const { weekId } = req.body;
   const user = await User.findByIdAndUpdate(
     req.userId,
     {
-      $set: { currentPlan: planId, currentWeek: weekId },
+      $set: { currentWeek: weekId },
     },
     { new: true }
   )
-    .populate('currentPlan')
     .populate('currentWeek')
     .exec();
+  console.log('set current week', user);
+
   res.status(200).json({ user });
 };
 

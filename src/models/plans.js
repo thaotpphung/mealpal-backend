@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const planSchema = mongoose.Schema({
-  planName: { type: String, required:  true },
-  userId: { type: String, required:  true },
+  planName: { type: String, required: true },
+  userId: { type: String, required: true },
   planDescription: { type: String },
   planCreatedTime: {
     type: Date,
     default: new Date(),
   },
-  planTags: { type: [String], default: []},
+  planTags: { type: [String], default: [] },
   likes: { type: [String], default: [] },
 });
 
-export default mongoose.model("Plan", planSchema);
+export default mongoose.model('Plan', planSchema);

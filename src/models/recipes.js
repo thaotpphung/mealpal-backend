@@ -3,13 +3,14 @@ import mongoose from 'mongoose';
 const recipeSchema = mongoose.Schema({
   userId: { type: String },
   recipeName: { type: String, required: true },
-  recipeIngredients: [
-    {
-      name: String,
-      quantity: Number,
-    },
-  ],
-  recipeInstructions: { type: [String], default: [] },
+  recipeDescription: { type: String, default: '' },
+  ingredients: { type: [String], default: [] },
+  instructions: { type: [String], default: [] },
+  calories: { type: String, default: '' },
+  servings: { type: String, default: '' },
+  prepTime: { type: String, default: '' },
+  cookTime: { type: String, default: '' },
+  recipeImage: { type: String },
 });
 
 export default mongoose.model('Recipe', recipeSchema);

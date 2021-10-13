@@ -6,6 +6,7 @@ import planRoutes from './src/routes/plans.js';
 import weekRoutes from './src/routes/weeks.js';
 import dayRoutes from './src/routes/days.js';
 import mealRoutes from './src/routes/meals.js';
+import recipeRoutes from './src/routes/recipes.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/plans', planRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/days', dayRoutes);
 app.use('/api/meals', mealRoutes);
+app.use('/api/recipes', recipeRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');
 });

@@ -6,9 +6,9 @@ import Meal from '../models/meals.js';
 
 const router = express.Router();
 
-export const getWeekListByPlanId = async (req, res) => {
+export const getAllWeeks = async (req, res) => {
   try {
-    const weeks = await Week.find({ planId: req.params.planId });
+    const weeks = await Week.find({ userId: req.userId });
     res.status(200).json(weeks);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -32,7 +32,7 @@ const createInitialDays = async (weekId) => {
       await newDay.save();
       await Promise.all(
         initalMeals.map(async (mealName) => {
-          await Meal.create({ mealName, dayId: newDay._id });
+          await Meal.create({ mealName, dayId: newDay._id, weekId });
         })
       );
     });
@@ -44,6 +44,7 @@ const createInitialDays = async (weekId) => {
 
 export const createWeek = async (req, res) => {
   const week = req.body;
+  console.log('create week');
   const newWeek = new Week({ ...week });
   try {
     await createInitialDays(newWeek._id);
@@ -61,7 +62,9 @@ export const deleteWeek = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`No week with id: ${id}`);
     await Week.findByIdAndRemove(id);
-    res.json({ message: 'Week deleted successfully.' });
+    await Day.deleteMany({ weekId: id });
+    await Meal.deleteMany({ weekId: id });
+    await res.json({ message: 'Week deleted successfully.' });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
