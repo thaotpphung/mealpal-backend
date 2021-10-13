@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
-const auth = async (req, res, next) => {
+exports.auth = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const isCustomAuth = token.length < 500; // if > 500 -> Google auth
@@ -28,5 +28,3 @@ const auth = async (req, res, next) => {
 // is admin
 
 // is moderator
-
-export default auth;

@@ -1,16 +1,12 @@
-import express from 'express';
+const express = require('express');
+
 const router = express.Router();
-import {
-  signin,
-  register,
-  setCurrentWeek,
-  getUser,
-} from '../controllers/users.js';
-import auth from '../middleware/auth.js';
+const authController = require('../controllers/users.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.get('/', auth, getUser);
-router.post('/signin', signin);
-router.post('/register', register);
-router.patch('/currentweek', auth, setCurrentWeek);
+router.get('/', middlewares.auth, authController.getUser);
+router.post('/signin', authController.signin);
+router.post('/register', authController.register);
+router.patch('/currentweek', middlewares.auth, authController.setCurrentWeek);
 
-export default router;
+module.exports = router;

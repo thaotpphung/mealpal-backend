@@ -1,11 +1,11 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Recipe from '../models/recipes.js';
-import Meal from '../models/meals.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const Recipe = require('../models/recipes.js');
+const Meal = require('../models/meals.js');
 
 const router = express.Router();
 
-export const getAllRecipes = async (req, res) => {
+exports.getAllRecipes = async (req, res) => {
   try {
     const recipes = await Recipe.find({ userId: req.userId });
     res.status(200).json(recipes);
@@ -14,7 +14,7 @@ export const getAllRecipes = async (req, res) => {
   }
 };
 
-export const createRecipe = async (req, res) => {
+exports.createRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.create(req.body);
     res.status(201).json(recipe);
@@ -24,7 +24,7 @@ export const createRecipe = async (req, res) => {
   }
 };
 
-export const deleteRecipe = async (req, res) => {
+exports.deleteRecipe = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -38,7 +38,7 @@ export const deleteRecipe = async (req, res) => {
   }
 };
 
-export const updateRecipe = async (req, res) => {
+exports.updateRecipe = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -56,5 +56,3 @@ export const updateRecipe = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
-
-export default router;

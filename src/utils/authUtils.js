@@ -1,14 +1,12 @@
-import dotenv from "dotenv";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+const dotenv = require('dotenv');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 dotenv.config();
 
-const getToken = (user) => {
+exports.getToken = (user) => {
   return jwt.sign(
     { email: user.email, _id: user._id },
     process.env.JWT_SECRET
     // { expiresIn: "24h" }
   );
 };
-
-export { getToken };

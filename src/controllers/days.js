@@ -1,12 +1,12 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Day from '../models/days.js';
-import Meal from '../models/meals.js';
-import Recipe from '../models/meals.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const Day = require('../models/days.js');
+const Meal = require('../models/meals.js');
+const Recipe = require('../models/meals.js');
 
 const router = express.Router();
 
-export const getDayListByWeekId = async (req, res) => {
+exports.getDayListByWeekId = async (req, res) => {
   try {
     let days = await Day.find({ weekId: req.params.weekId }).lean();
     await Promise.all(
@@ -20,5 +20,3 @@ export const getDayListByWeekId = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
-
-export default router;

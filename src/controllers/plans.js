@@ -1,9 +1,9 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Plan from '../models/plans.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const Plan = require('../models/plans.js');
 const router = express.Router();
 
-export const createPlan = async (req, res) => {
+exports.createPlan = async (req, res) => {
   const plan = req.body.plan;
   const newPlan = new Plan({
     ...plan,
@@ -18,7 +18,7 @@ export const createPlan = async (req, res) => {
   }
 };
 
-export const getPlanListByUserId = async (req, res) => {
+exports.getPlanListByUserId = async (req, res) => {
   try {
     const plans = await Plan.find({ userId: req.userId });
     res.status(200).json(plans);
@@ -27,7 +27,7 @@ export const getPlanListByUserId = async (req, res) => {
   }
 };
 
-export const getPlan = async (req, res) => {
+exports.getPlan = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -39,12 +39,10 @@ export const getPlan = async (req, res) => {
   }
 };
 
-export const deletePlan = async (req, res) => {
+exports.deletePlan = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send(`No plan with id: ${id}`);
   await Plan.findByIdAndRemove(id);
   res.json({ message: 'Plan deleted successfully.' });
 };
-
-export default router;

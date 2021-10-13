@@ -1,9 +1,9 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Meal from '../models/meals.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const Meal = require('../models/meals.js');
 const router = express.Router();
 
-export const createMeal = async (req, res) => {
+exports.createMeal = async (req, res) => {
   try {
     const meal = req.body;
     const newMeal = await Meal.create({ ...meal });
@@ -20,7 +20,7 @@ export const createMeal = async (req, res) => {
   }
 };
 
-export const deleteMeal = async (req, res) => {
+exports.deleteMeal = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -33,7 +33,7 @@ export const deleteMeal = async (req, res) => {
   }
 };
 
-export const updateMeal = async (req, res) => {
+exports.updateMeal = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -51,5 +51,3 @@ export const updateMeal = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
-
-export default router;

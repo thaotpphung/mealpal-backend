@@ -1,8 +1,10 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const daySchema = mongoose.Schema({
   weekId: { type: String, required: true },
   dayName: { type: String, required: true },
 });
 
-export default mongoose.model('Day', daySchema);
+const Day = mongoose.model('Day', daySchema);
+
+module.exports = Day;

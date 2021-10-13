@@ -1,10 +1,9 @@
-import express from 'express';
-
-import { getDayListByWeekId } from '../controllers/days.js';
+const express = require('express');
 
 const router = express.Router();
-import auth from '../middleware/auth.js';
+const dayController = require('../controllers/days.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.get('/:weekId', auth, getDayListByWeekId);
+router.get('/:weekId', middlewares.auth, dayController.getDayListByWeekId);
 
-export default router;
+module.exports = router;

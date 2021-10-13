@@ -1,18 +1,12 @@
-import express from 'express';
-
-import {
-  getAllRecipes,
-  createRecipe,
-  deleteRecipe,
-  updateRecipe,
-} from '../controllers/recipes.js';
+const express = require('express');
 
 const router = express.Router();
-import auth from '../middleware/auth.js';
+const recipeController = require('../controllers/recipes.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.get('', auth, getAllRecipes);
-router.post('/', auth, createRecipe);
-router.delete('/:id', auth, deleteRecipe);
-router.patch('/:id', auth, updateRecipe);
+router.get('', middlewares.auth, recipeController.getAllRecipes);
+router.post('/', middlewares.auth, recipeController.createRecipe);
+router.delete('/:id', middlewares.auth, recipeController.deleteRecipe);
+router.patch('/:id', middlewares.auth, recipeController.updateRecipe);
 
-export default router;
+module.exports = router;

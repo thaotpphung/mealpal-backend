@@ -1,12 +1,12 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import Week from '../models/weeks.js';
-import Day from '../models/days.js';
-import Meal from '../models/meals.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const Week = require('../models/weeks.js');
+const Day = require('../models/days.js');
+const Meal = require('../models/meals.js');
 
 const router = express.Router();
 
-export const getAllWeeks = async (req, res) => {
+exports.getAllWeeks = async (req, res) => {
   try {
     const weeks = await Week.find({ userId: req.userId });
     res.status(200).json(weeks);
@@ -42,9 +42,8 @@ const createInitialDays = async (weekId) => {
   }
 };
 
-export const createWeek = async (req, res) => {
+exports.createWeek = async (req, res) => {
   const week = req.body;
-  console.log('create week');
   const newWeek = new Week({ ...week });
   try {
     await createInitialDays(newWeek._id);
@@ -56,7 +55,7 @@ export const createWeek = async (req, res) => {
   }
 };
 
-export const deleteWeek = async (req, res) => {
+exports.deleteWeek = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -71,7 +70,7 @@ export const deleteWeek = async (req, res) => {
   }
 };
 
-export const updateWeek = async (req, res) => {
+exports.updateWeek = async (req, res) => {
   try {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
@@ -90,5 +89,3 @@ export const updateWeek = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
-
-export default router;

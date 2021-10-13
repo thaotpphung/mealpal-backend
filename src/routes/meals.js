@@ -1,12 +1,11 @@
-import express from 'express';
-
-import { createMeal, deleteMeal, updateMeal } from '../controllers/meals.js';
+const express = require('express');
 
 const router = express.Router();
-import auth from '../middleware/auth.js';
+const mealController = require('../controllers/meals.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.post('/', auth, createMeal);
-router.delete('/:id', auth, deleteMeal);
-router.patch('/:id', auth, updateMeal);
+router.post('/', middlewares.auth, mealController.createMeal);
+router.delete('/:id', middlewares.auth, mealController.deleteMeal);
+router.patch('/:id', middlewares.auth, mealController.updateMeal);
 
-export default router;
+module.exports = router;

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const weekSchema = mongoose.Schema({
   weekName: { type: String, required: true },
@@ -9,4 +9,6 @@ const weekSchema = mongoose.Schema({
   weekDiet: { type: String, default: '' },
 });
 
-export default mongoose.model('Week', weekSchema);
+const Week = mongoose.model('Week', weekSchema);
+
+module.exports = Week;

@@ -1,18 +1,12 @@
-import express from 'express';
-
-import {
-  getAllWeeks,
-  createWeek,
-  deleteWeek,
-  updateWeek,
-} from '../controllers/weeks.js';
+const express = require('express');
 
 const router = express.Router();
-import auth from '../middleware/auth.js';
+const weekController = require('../controllers/weeks.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.get('', auth, getAllWeeks);
-router.post('/', auth, createWeek);
-router.delete('/:id', auth, deleteWeek);
-router.patch('/:id', auth, updateWeek);
+router.get('', middlewares.auth, weekController.getAllWeeks);
+router.post('/', middlewares.auth, weekController.createWeek);
+router.delete('/:id', middlewares.auth, weekController.deleteWeek);
+router.patch('/:id', middlewares.auth, weekController.updateWeek);
 
-export default router;
+module.exports = router;

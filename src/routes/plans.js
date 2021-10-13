@@ -1,18 +1,12 @@
-import express from 'express';
-
-import {
-  getPlanListByUserId,
-  getPlan,
-  createPlan,
-  deletePlan,
-} from '../controllers/plans.js';
+const express = require('express');
 
 const router = express.Router();
-import auth from '../middleware/auth.js';
+const planController = require('../controllers/plans.js');
+const middlewares = require('../middlewares/auth.js');
 
-router.post('/', auth, createPlan);
-router.get('/', auth, getPlanListByUserId);
-router.get('/:id', auth, getPlan);
-router.delete('/:id', auth, deletePlan);
+router.post('/', middlewares.auth, planController.createPlan);
+router.get('/', middlewares.auth, planController.getPlanListByUserId);
+router.get('/:id', middlewares.auth, planController.getPlan);
+router.delete('/:id', middlewares.auth, planController.deletePlan);
 
-export default router;
+module.exports = router;
