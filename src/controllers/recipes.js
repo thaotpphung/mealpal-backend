@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import Recipe from '../models/recipes.js';
+import Meal from '../models/meals.js';
 
 const router = express.Router();
 
@@ -28,6 +29,7 @@ export const deleteRecipe = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`No recipe with id: ${id}`);
+    await Meal.updateMany({ food: id }, { $pullAll: { food: [id] } });
     await Recipe.findByIdAndRemove(id);
     res.json({ message: 'Recipe deleted successfully.' });
   } catch (error) {

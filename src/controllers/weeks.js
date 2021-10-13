@@ -71,4 +71,24 @@ export const deleteWeek = async (req, res) => {
   }
 };
 
+export const updateWeek = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send(`No week with id: ${id}`);
+    const week = await Week.findByIdAndUpdate(
+      id,
+      {
+        $set: req.body,
+      },
+      { new: true }
+    );
+    console.log('update week', week);
+    res.json({ message: 'Week updated successfully', data: week });
+  } catch (error) {
+    console.log(error);
+    res.status(409).json({ message: error.message });
+  }
+};
+
 export default router;
