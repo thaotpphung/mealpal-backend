@@ -9,7 +9,11 @@ const router = express.Router();
 exports.getAllWeeks = async (req, res) => {
   try {
     const weeks = await Week.find({ userId: req.userId });
-    res.status(200).json(weeks);
+    res.status(200).json({
+      status: 'success',
+      data: weeks,
+      message: null,
+    });
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -27,8 +31,8 @@ const createInitialDays = async (weekId) => {
   ];
   const initalMeals = ['Break Fast', 'Lunch', 'Dinner'];
   try {
-    weekDays.forEach(async (dayName) => {
-      const newDay = new Day({ dayName, weekId });
+    weekDays.forEach(async (dayName, dayIdx) => {
+      const newDay = new Day({ dayName, weekId, dayOrder: dayIdx + 1 });
       await newDay.save();
       await Promise.all(
         initalMeals.map(async (mealName) => {
@@ -48,7 +52,11 @@ exports.createWeek = async (req, res) => {
   try {
     await createInitialDays(newWeek._id);
     await newWeek.save();
-    res.status(201).json(newWeek);
+    res.status(201).json({
+      status: 'success',
+      data: newWeek,
+      message: 'Deleted week successfully',
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
@@ -63,7 +71,11 @@ exports.deleteWeek = async (req, res) => {
     await Week.findByIdAndRemove(id);
     await Day.deleteMany({ weekId: id });
     await Meal.deleteMany({ weekId: id });
-    await res.json({ message: 'Week deleted successfully.' });
+    res.status(200).json({
+      status: 'success',
+      data: null,
+      message: 'Deleted week successfully',
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
@@ -82,8 +94,11 @@ exports.updateWeek = async (req, res) => {
       },
       { new: true }
     );
-    console.log('update week', week);
-    res.json({ message: 'Week updated successfully', data: week });
+    res.status(201).json({
+      status: 'success',
+      data: week,
+      message: 'Deleted week successfully',
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });

@@ -13,10 +13,14 @@ exports.createMeal = async (req, res) => {
       mealName: newMeal.mealName,
       dayId: newMeal.dayId,
     };
-    res.status(201).json(mealReturned);
+    res.status(201).json({
+      status: 'success',
+      data: mealReturned,
+      message: 'Created week successfully',
+    });
   } catch (error) {
     console.log(error);
-    res.status(409).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -26,10 +30,14 @@ exports.deleteMeal = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send(`No meal with id: ${id}`);
     await Meal.findByIdAndRemove(id);
-    res.json({ message: 'Meal deleted successfully.' });
+    res.status(200).json({
+      status: 'success',
+      data: null,
+      message: 'Deleted week successfully',
+    });
   } catch (error) {
     console.log(error);
-    res.status(409).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -45,7 +53,11 @@ exports.updateMeal = async (req, res) => {
       },
       { new: true }
     );
-    res.json({ message: 'Meal updated successfully' });
+    res.status(201).json({
+      status: 'success',
+      data: null,
+      message: 'Meal updated successfully',
+    });
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
