@@ -18,10 +18,14 @@ exports.signin = async (req, res) => {
       console.log("user doesn't exists");
       return res.status(404).json({ message: "User doesn't exist" });
     }
+    console.log(email, password);
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
+      console.log('password invalid');
+
       return res.status(400).json({ message: 'Invalid credentials' });
     }
+    console.log('done check password');
     res.status(200).json({
       status: 'success',
       data: { result: user, token: authUtils.getToken(user) },
@@ -42,7 +46,8 @@ exports.register = async (req, res) => {
     const result = await User.create({
       email,
       password: hashedPassword,
-      fullName: `${firstName} ${lastName}`,
+      firstName,
+      lastName,
     });
 
     const newWeek = await Week.create({
@@ -53,13 +58,10 @@ exports.register = async (req, res) => {
       weekTags: ['Add', 'Tags', 'To', 'Your', 'Week'],
     });
     const newNewWeek = await Week.findById(newWeek._id);
-    console.log('done creating creak', newWeek);
     await createInitialDays(newWeek._id);
     result.currentWeek = newWeek;
     await result.save();
-
     const newUser = await User.findById(result._id).populate('currentWeek');
-    console.log('new user', newUser);
 
     res.status(201).json({
       status: 'success',

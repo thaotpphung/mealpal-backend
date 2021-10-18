@@ -11,7 +11,9 @@ exports.getDayListByWeekId = async (req, res) => {
       .lean();
     await Promise.all(
       days.map(async (day) => {
-        let meals = await Meal.find({ dayId: day._id }).populate('food').lean();
+        let meals = await Meal.find({ dayId: day._id })
+          .populate('food', 'recipeName')
+          .lean();
         day.meals = meals;
       })
     );

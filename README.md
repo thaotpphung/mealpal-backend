@@ -29,10 +29,10 @@ When an API call fails due to an error on the server. For example:
   "status": "fail",
   "data": null, /* or optional error payload */ 
   /* 
-  for example: [
+  for example: {
     "email": "Meal name is required",
     "password": "Password" is required"
-  ]
+  }
   */
   "message": "Error xyz has occurred"
 }

@@ -3,16 +3,26 @@ const mongoose = require('mongoose');
 const Week = require('../models/weeks.js');
 const Day = require('../models/days.js');
 const Meal = require('../models/meals.js');
-
-const router = express.Router();
+const APIFeatures = require('./../utils/apiFeatures');
 
 exports.getAllWeeks = async (req, res) => {
   try {
-    const weeks = await Week.find({ userId: req.userId });
+    const count = await Week.estimatedDocumentCount({ userId: req.userId });
+    const features = new APIFeatures(
+      Week.find({ userId: req.userId }),
+      req.query
+    )
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const doc = await features.query;
     res.status(200).json({
       status: 'success',
-      data: weeks,
-      message: null,
+      data: {
+        count: count,
+        data: doc,
+      },
     });
   } catch (error) {
     res.status(404).json({ message: error.message });

@@ -2,14 +2,29 @@ const mongoose = require('mongoose');
 
 const recipeSchema = mongoose.Schema({
   userId: { type: String },
-  recipeName: { type: String, required: true },
-  recipeDescription: { type: String, default: '' },
+  recipeName: {
+    type: String,
+    required: [true, "Recipe's name is required"],
+    maxlength: [40, 'Must have less or equal than 40 characters'],
+  },
+  recipeDescription: {
+    type: String,
+    default: '',
+    maxlength: [100, 'Must have less or equal than 40 characters'],
+  },
   ingredients: { type: [String], default: [] },
   instructions: { type: [String], default: [] },
   calories: { type: String, default: '' },
   servings: { type: String, default: '' },
-  prepTime: { type: String, default: '' },
-  cookTime: { type: String, default: '' },
+  prepTime: {
+    type: String,
+    default: '',
+  },
+  cookTime: {
+    type: String,
+    default: '',
+    maxlength: [40, 'Must have less or equal than 40 characters'],
+  },
   recipeImage: { type: String },
 });
 
