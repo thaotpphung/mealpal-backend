@@ -7,6 +7,7 @@ const APIFeatures = require('./../utils/apiFeatures');
 exports.getAllRecipes = async (req, res) => {
   try {
     const count = await Recipe.estimatedDocumentCount({ userId: req.userId });
+    console.log('query recipe', req.query);
     const features = new APIFeatures(
       Recipe.find({ userId: req.userId }),
       req.query
@@ -19,7 +20,8 @@ exports.getAllRecipes = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        count: count,
+        count,
+        currentCount: doc.length,
         data: doc,
       },
     });

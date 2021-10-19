@@ -8,6 +8,7 @@ const APIFeatures = require('./../utils/apiFeatures');
 exports.getAllWeeks = async (req, res) => {
   try {
     const count = await Week.estimatedDocumentCount({ userId: req.userId });
+    console.log('query', req.query);
     const features = new APIFeatures(
       Week.find({ userId: req.userId }),
       req.query
@@ -20,8 +21,9 @@ exports.getAllWeeks = async (req, res) => {
     res.status(200).json({
       status: 'success',
       data: {
-        count: count,
+        count,
         data: doc,
+        currentCount: doc.length,
       },
     });
   } catch (error) {
@@ -112,5 +114,26 @@ exports.updateWeek = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(409).json({ message: error.message });
+  }
+};
+
+exports.getWeek = async (req, res) => {
+  // for each day, populate the meals
+  try {
+    let days = await Day.find({ weekId: req.params.weekId })
+      .sort('dayOrder')
+      .lean();
+    await Promise.all(
+      days.map(async (day) => {
+        let meals = await Meal.find({ dayId: day._id })
+          .populate('food', 'recipeName')
+          .lean();
+        day.meals = meals;
+      })
+    );
+    let weeks = await Week.find();
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: error.message });
   }
 };
