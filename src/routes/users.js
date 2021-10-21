@@ -6,6 +6,6 @@ const middlewares = require('../middlewares/auth.js');
 
 router.post('/signin', authController.signin);
 router.post('/register', authController.register);
-router.patch('/currentweek', middlewares.auth, authController.setCurrentWeek);
+router.patch('/:id', middlewares.auth, authController.updateUser);
 
 module.exports = router;

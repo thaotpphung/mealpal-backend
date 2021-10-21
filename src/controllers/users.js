@@ -2,9 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const User = require('../models/users.js');
-const Day = require('../models/days.js');
 const Week = require('../models/weeks.js');
-const Meal = require('../models/weeks.js');
 
 const authUtils = require('../utils/authUtils.js');
 
@@ -49,20 +47,12 @@ exports.register = async (req, res) => {
       firstName,
       lastName,
     });
-
-    const newWeek = await Week.create({
-      weekName: 'Sample Week',
-      userId: result._id,
-      weekDescription: 'Sample Description',
-      weekDiet: 'Vegan',
-      weekTags: ['Add', 'Tags', 'To', 'Your', 'Week'],
-    });
-    const newNewWeek = await Week.findById(newWeek._id);
-    await createInitialDays(newWeek._id);
-    result.currentWeek = newWeek;
+    const newWeek = await Week.create({ weekName: 'Sample Week' });
+    const days = await createInitialDays();
+    newWeek.days = days;
+    await newWeek.save();
+    result.currentWeek = newWeek._id;
     await result.save();
-    const newUser = await User.findById(result._id).populate('currentWeek');
-
     res.status(201).json({
       status: 'success',
       data: { result, token: authUtils.getToken(result) },
@@ -74,59 +64,55 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.setCurrentWeek = async (req, res) => {
-  try {
-    const { weekId } = req.body;
-    const user = await User.findByIdAndUpdate(
-      req.userId,
-      {
-        $set: { currentWeek: weekId },
-      },
-      { new: true }
-    )
-      .populate('currentWeek')
-      .exec();
-
-    res.status(200).json({
-      status: 'success',
-      data: user,
-      message: 'Successfully set current week',
+const createInitialDays = async () => {
+  const meals = ['Break Fast', 'Lunch', 'Dinner'];
+  let initialMeals = [];
+  meals.forEach((meal, idx) => {
+    initialMeals.push({
+      mealName: meal,
+      order: idx,
+      food: [],
     });
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong' });
-    console.log('error set current week', weekId, error);
-  }
-};
-
-const createInitialDays = async (weekId) => {
+  });
   const weekDays = [
     'Monday',
     'Tuesday',
-    'WednesDay',
+    'Wednesday',
     'Thursday',
     'Friday',
     'Saturday',
     'Sunday',
   ];
-  const initalMeals = ['Break Fast', 'Lunch', 'Dinner'];
+  let initialDays = [];
+  weekDays.forEach((day) => {
+    initialDays.push({
+      dayName: day,
+      meals: initialMeals,
+    });
+  });
+  return initialDays;
+};
+
+exports.updateUser = async (req, res) => {
   try {
-    weekDays.forEach(async (dayName, dayIdx) => {
-      const newDay = new Day({ dayName, weekId, dayOrder: dayIdx + 1 });
-      console.log('create day', weekId);
-      await newDay.save();
-      // try {
-      // const meals = await Promise.all(
-      //   initalMeals.map(async (mealName) => {
-      //     await Meal.create({ mealName, dayId: newDay._id, weekId });
-      //   })
-      // );
-      //   console.log('create meals', meals);
-      // } catch (error) {
-      //   console.log('error creating meals', error);
-      // }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      {
+        $set: req.body,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user: updatedUser,
+      },
+      message: 'Successfully updated user',
     });
   } catch (error) {
-    console.log('error creating day', error);
-    res.status(409).json({ message: error.message });
+    res.status(500).json({ message: 'Something went wrong' });
+    console.log('error register', error);
   }
 };

@@ -1,17 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Recipe = require('../models/recipes.js');
-const Meal = require('../models/meals.js');
 const APIFeatures = require('./../utils/apiFeatures');
 
 exports.getAllRecipes = async (req, res) => {
   try {
-    const count = await Recipe.estimatedDocumentCount({ userId: req.userId });
-    console.log('query recipe', req.query);
-    const features = new APIFeatures(
-      Recipe.find({ userId: req.userId }),
-      req.query
-    )
+    let filter = {};
+    if (req.query.userId) filter = { userId: req.userId };
+    const count = await Recipe.estimatedDocumentCount(filter);
+    const features = new APIFeatures(Recipe.find(filter), req.query)
       .filter()
       .sort()
       .limitFields()
@@ -33,10 +30,10 @@ exports.getAllRecipes = async (req, res) => {
 
 exports.createRecipe = async (req, res) => {
   try {
-    const recipe = await Recipe.create(req.body);
+    const recipe = await Recipe.create({ ...req.body, userId: req.userId });
     res.status(201).json({
       status: 'success',
-      data: recipe,
+      data: { data: recipe },
       message: null,
     });
   } catch (error) {
@@ -48,9 +45,6 @@ exports.createRecipe = async (req, res) => {
 exports.deleteRecipe = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(404).send(`No recipe with id: ${id}`);
-    await Meal.updateMany({ food: id }, { $pullAll: { food: [id] } });
     await Recipe.findByIdAndRemove(id);
     res.status(200).json({
       status: 'success',
@@ -66,8 +60,6 @@ exports.deleteRecipe = async (req, res) => {
 exports.updateRecipe = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
-      return res.status(404).send(`No recipe with id: ${id}`);
     const recipe = await Recipe.findByIdAndUpdate(
       id,
       {
