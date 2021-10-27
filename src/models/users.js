@@ -5,7 +5,7 @@ const userSchema = mongoose.Schema({
   firstName: { type: String, required: [true, 'First name is required'] },
   lastName: { type: String, required: [true, 'Last name is required'] },
   username: { type: String, required: [true, 'Username is required'] },
-  bio: { type: String },
+  bio: { type: String, default: '' },
   email: {
     type: String,
     unique: true,
@@ -21,6 +21,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password'],
     minlength: 6,
+    select: false,
   },
   currentWeek: {
     type: mongoose.Schema.Types.ObjectId,
