@@ -5,14 +5,10 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const compression = require('compression');
 const cors = require('cors');
-
 const AppError = require('./src/errors/AppError');
-const globalErrorHandler = require('./src/errors/handleErrors');
+const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
-const planRoutes = require('./src/routes/plans.js');
 const weekRoutes = require('./src/routes/weeks.js');
-const dayRoutes = require('./src/routes/days.js');
-const mealRoutes = require('./src/routes/meals.js');
 const recipeRoutes = require('./src/routes/recipes.js');
 
 const app = express();
@@ -45,10 +41,7 @@ app.use(compression());
 
 // ROUTES
 app.use('/api/users', userRoutes);
-app.use('/api/plans', planRoutes);
 app.use('/api/weeks', weekRoutes);
-app.use('/api/days', dayRoutes);
-app.use('/api/meals', mealRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');
