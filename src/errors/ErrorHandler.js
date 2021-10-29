@@ -48,34 +48,3 @@ module.exports = (err, req, res, next) => {
     message: 'Something went wrong, please contact admin!',
   });
 };
-
-// const sendErrorDev = (err, req, res) => {
-//   if (req.originalUrl.startsWith('/api')) {
-//     return res.status(err.statusCode).json({
-//       status: err.status,
-//       data: error,
-//       message: err.message,
-//       stack: err.stack,
-//     });
-//   }
-//   return res.status(err.statusCode).json({
-//     status: 'error',
-//     data: err.message,
-//     message: 'Something went wrong!',
-//   });
-// };
-
-// const sendErrorProd = (err, req, res) => {
-//   if (req.originalUrl.startsWith('/api')) {
-//     return res.status(err.statusCode).json({
-//       status: err.status,
-//       data: error,
-//       message: err.message,
-//     });
-//   }
-//   return res.status(err.statusCode).json({
-//     status: err.status,
-//     data: null,
-//     message: 'Something went wrong!',
-//   });
-// };

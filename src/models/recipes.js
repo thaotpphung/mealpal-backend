@@ -14,17 +14,17 @@ const recipeSchema = mongoose.Schema({
   },
   ingredients: { type: [String], default: [] },
   instructions: { type: [String], default: [] },
-  calories: { type: String, default: '' },
-  servings: { type: String, default: '' },
+  calories: { type: Number, default: 0 },
+  servings: { type: Number, default: 0 },
   prepTime: {
-    type: String,
-    default: '',
+    type: Number,
+    default: 0,
   },
   cookTime: {
-    type: String,
-    default: '',
-    maxlength: [40, 'Must have less or equal than 40 characters'],
+    type: Number,
+    default: 0,
   },
+  recipeDiet: { type: String },
   recipeImage: { type: String },
 });
 
