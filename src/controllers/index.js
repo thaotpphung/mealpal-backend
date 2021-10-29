@@ -7,7 +7,6 @@ exports.getAll = (Model) =>
     let filter = {};
     if (!req.query.all) filter = { userId: req.userId };
     const count = await Model.countDocuments(filter);
-    console.log(count);
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()

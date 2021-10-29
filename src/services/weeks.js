@@ -1,4 +1,6 @@
-exports.createInitialDays = async () => {
+const Week = require('../models/weeks.js');
+
+createInitialDays = async () => {
   const meals = ['Break Fast', 'Lunch', 'Dinner'];
   let initialMeals = [];
   meals.forEach((meal, idx) => {
@@ -25,4 +27,12 @@ exports.createInitialDays = async () => {
     });
   });
   return initialDays;
+};
+
+exports.createWeek = async (week, userId) => {
+  const newWeek = new Week({ ...week, userId: userId });
+  const days = await createInitialDays();
+  newWeek.days = days;
+  await newWeek.save();
+  return newWeek;
 };

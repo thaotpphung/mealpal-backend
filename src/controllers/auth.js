@@ -5,6 +5,7 @@ const User = require('../models/users.js');
 const authService = require('../services/auth.js');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../errors/AppError');
+const WeekService = require('../services/weeks.js');
 dotenv.config();
 
 const sendTokenResponse = (user, statusCode, message, req, res) => {
@@ -27,10 +28,7 @@ exports.signin = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide username or password', 400));
   }
   // check if user exists and password is correct
-  const user = await User.findOne({ username })
-    .select('+password')
-    .populate('currentWeek')
-    .exec();
+  const user = await User.findOne({ username }).select('+password').exec();
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError('Invalid credentials', 401));
   }
@@ -54,6 +52,13 @@ exports.register = catchAsync(async (req, res, next) => {
     firstName,
     lastName,
   });
+  // assign an initial current week
+  const newWeek = await WeekService.createWeek(
+    { weekName: 'Sample Week', weekDiet: 'Vegan', caloGoal: 2500 },
+    user._id
+  );
+  user.currentWeek = newWeek._id;
+  user.avatar = `https://avatars.dicebear.com/api/miniavs/${user._id}.svg`;
   await user.save();
   sendTokenResponse(user, 200, 'Successfully signed up', req, res);
 });

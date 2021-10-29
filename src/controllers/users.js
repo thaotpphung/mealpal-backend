@@ -21,3 +21,5 @@ exports.updateUser = catchAsync(async (req, res) => {
     message: 'Successfully updated user',
   });
 });
+
+exports.updateAvatar = catchAsync(async (req, res) => {});

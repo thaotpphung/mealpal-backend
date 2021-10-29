@@ -1,7 +1,7 @@
 const Week = require('../models/weeks.js');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./index');
-const weekService = require('../services/weeks.js');
+const WeekService = require('../services/weeks.js');
 
 exports.getAllWeeks = factory.getAll(Week);
 
@@ -26,10 +26,7 @@ exports.getWeek = catchAsync(async (req, res) => {
 
 exports.createWeek = catchAsync(async (req, res) => {
   const week = req.body;
-  const newWeek = new Week({ ...week, userId: req.userId });
-  const days = await weekService.createInitialDays();
-  newWeek.days = days;
-  await newWeek.save();
+  const newWeek = await WeekService.createWeek(week, req.userId);
   res.status(201).json({
     status: 'success',
     data: newWeek,
