@@ -4,28 +4,23 @@ const dotenv = require('dotenv');
 const User = require('../models/users.js');
 const Week = require('../models/weeks.js');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./index');
 
-exports.updateUser = catchAsync(async (req, res) => {
-  const user = await User.findByIdAndUpdate(
-    req.userId,
-    {
-      $set: req.body,
-    },
-    {
-      new: true,
-    }
-  );
+exports.updateUser = factory.updateOne(User, 'userId');
+
+exports.getUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) {
+    return next(new AppError('Info not found', 404));
+  }
+  user.email = undefined;
+
   res.status(200).json({
     status: 'success',
     data: user,
-    message: `Successfully updated user!`,
+    message: null,
   });
-});
-
-exports.getUser = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-  res.status(200).json({ status: 'success', data: recipe, message: null });
 });
 
 exports.updateAvatar = catchAsync(async (req, res) => {});

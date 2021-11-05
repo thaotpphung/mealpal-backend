@@ -9,13 +9,13 @@ exports.updateWeek = factory.updateOne(Week);
 
 exports.updateWeekByDay = catchAsync(async (req, res) => {
   const { id, dayIdx } = req.params;
-  await Week.findById(id);
+  let week = await Week.findById(id);
   week.days[dayIdx] = req.body;
   week.save();
   res.status(200).json({
     status: 'success',
     data: null,
-    message: 'Document updated successfully',
+    message: 'Info updated successfully',
   });
 });
 
@@ -31,7 +31,7 @@ exports.getWeek = factory.getOne(Week, [
       },
     },
   },
-  { path: 'userId', model: 'User', select: 'avatar' },
+  { path: 'userId', model: 'User', select: ['avatar', 'username'] },
 ]);
 
 exports.createWeek = catchAsync(async (req, res) => {
@@ -39,6 +39,6 @@ exports.createWeek = catchAsync(async (req, res) => {
   res.status(201).json({
     status: 'success',
     data: newWeek,
-    message: 'Created week successfully',
+    message: 'Info created successfully',
   });
 });

@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 
 const weekSchema = mongoose.Schema(
   {
-    weekName: { type: String, required: [true, "Week's name is required"] },
+    weekName: {
+      type: String,
+      required: [true, "Week's name is required"],
+    },
     weekDescription: { type: String, default: '' },
     userId: { type: String, required: true },
     weekTags: { type: [String], default: [] },
@@ -25,6 +28,10 @@ const weekSchema = mongoose.Schema(
         ],
       },
     ],
+    updatedTime: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },

@@ -40,19 +40,23 @@ const recipeSchema = mongoose.Schema(
       default: 0,
       required: [true, 'Servings is required'],
     },
-    prepTime: {
+    time: {
       type: Number,
       default: 0,
     },
-    cookTime: {
-      type: Number,
-      default: 0,
+    servingSize: {
+      type: String,
+      default: '',
     },
     recipeDiet: {
       type: String,
       maxlength: [40, 'Must have less or equal than 40 characters'],
     },
     recipeImage: { type: String },
+    updatedTime: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
