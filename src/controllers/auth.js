@@ -54,7 +54,7 @@ exports.register = catchAsync(async (req, res, next) => {
   });
   // assign an initial current week
   const newWeek = await WeekService.createWeek(
-    { weekName: 'Sample Week', weekDiet: 'Vegan', caloGoal: 2500 },
+    { weekName: 'Sample Week', weekDiet: 'Vegan', caloGoal: 0 },
     user._id
   );
   user.currentWeek = newWeek._id;

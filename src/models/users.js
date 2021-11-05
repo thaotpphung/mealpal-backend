@@ -27,9 +27,9 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Week',
   },
-  preferredDiet: { type: [String] },
-  caloGoal: { type: Number },
-  avatar: { type: String },
+  preferredDiet: { type: String, default: '' },
+  caloGoal: { type: Number, default: 0 },
+  avatar: { type: String, default: '' },
 });
 
 const User = mongoose.model('User', userSchema);

@@ -30,9 +30,14 @@ createInitialDays = async () => {
 };
 
 exports.createWeek = async (week, userId) => {
-  const newWeek = new Week({ ...week, userId: userId });
+  const newWeek = await Week.create({ ...week, userId });
   const days = await createInitialDays();
   newWeek.days = days;
   await newWeek.save();
-  return newWeek;
+  const populatedWeek = await Week.findById(newWeek._id).populate({
+    path: 'userId',
+    model: 'User',
+    select: 'avatar',
+  });
+  return populatedWeek;
 };
