@@ -1,11 +1,11 @@
 const express = require('express');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const weekController = require('../controllers/weeks.js');
 const middlewares = require('../middlewares/auth.js');
 
-router.get('', middlewares.auth, weekController.getAllWeeks);
-router.get('/:id', middlewares.auth, weekController.getWeek);
+router.get('/', weekController.getAllWeeks);
+router.get('/:id', weekController.getWeek);
 router.post('/', middlewares.auth, weekController.createWeek);
 router.delete('/:id', middlewares.auth, weekController.deleteWeek);
 router.patch('/:id', middlewares.auth, weekController.updateWeek);

@@ -15,7 +15,7 @@ exports.updateWeekByDay = catchAsync(async (req, res) => {
   res.status(200).json({
     status: 'success',
     data: null,
-    message: 'Info updated successfully',
+    message: 'Updated successfully',
   });
 });
 
@@ -39,6 +39,6 @@ exports.createWeek = catchAsync(async (req, res) => {
   res.status(201).json({
     status: 'success',
     data: newWeek,
-    message: 'Info created successfully',
+    message: 'Created successfully',
   });
 });

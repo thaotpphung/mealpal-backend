@@ -5,10 +5,8 @@ const APIFeatures = require('../utils/apiFeatures');
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     let filter = {};
-    if (!req.query.all) {
-      filter = { userId: req.userId };
-    } else {
-      delete req.query.all;
+    if (req.params.userId) {
+      filter = { userId: req.params.userId };
     }
     const count = await Model.countDocuments(filter);
     const features = new APIFeatures(Model.find(filter), req.query)
@@ -19,7 +17,7 @@ exports.getAll = (Model) =>
     const doc = await features.query.populate({
       path: 'userId',
       model: 'User',
-      select: 'avatar',
+      select: ['avatar', 'username'],
     });
     res.status(200).json({
       status: 'success',
@@ -39,12 +37,13 @@ exports.getOne = (Model, popOptions) =>
     const doc = await query;
 
     if (!doc) {
-      return next(new AppError('No document found with that ID', 404));
+      return next(new AppError('Resource not found', 404));
     }
 
     res.status(200).json({
       status: 'success',
       data: doc,
+      message: null,
     });
   });
 
@@ -55,15 +54,15 @@ exports.createOne = (Model) =>
     res.status(201).json({
       status: 'success',
       data: doc,
-      message: 'Created document successfully',
+      message: 'Created successfully',
     });
   });
 
-exports.updateOne = (Model) =>
+exports.updateOne = (Model, param = '') =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
+      param === '' ? req.params.id : req.params[param],
+      { $set: { ...req.body, updatedTime: new Date() } },
       {
         new: true,
         runValidators: true,
@@ -71,13 +70,13 @@ exports.updateOne = (Model) =>
     );
 
     if (!doc) {
-      return next(new AppError('No document found with that ID', 404));
+      return next(new AppError('Resource not found', 404));
     }
 
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Document updated successfully',
+      message: 'Info updated successfully',
     });
   });
 
@@ -86,12 +85,12 @@ exports.deleteOne = (Model) =>
     const doc = await Model.findByIdAndDelete(req.params.id);
 
     if (!doc) {
-      return next(new AppError('No document found with that ID', 404));
+      return next(new AppError('Resource not found', 404));
     }
 
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Document deleted successfully',
+      message: 'Deleted successfully',
     });
   });

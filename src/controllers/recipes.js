@@ -22,13 +22,13 @@ exports.deleteRecipe = catchAsync(async (req, res, next) => {
   );
 
   if (!doc) {
-    return next(new AppError('Info not found', 404));
+    return next(new AppError('Resource not found', 404));
   }
 
   res.status(200).json({
     status: 'success',
     data: null,
-    message: 'Info deleted successfully',
+    message: 'Deleted successfully',
   });
 });
 exports.createRecipe = catchAsync(async (req, res) => {
@@ -36,6 +36,6 @@ exports.createRecipe = catchAsync(async (req, res) => {
   res.status(201).json({
     status: 'success',
     data: recipe,
-    message: 'Info created successfully',
+    message: 'Created successfully',
   });
 });

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const AppError = require('./../errors/AppError');
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ exports.auth = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
+    return next(new AppError('Action requires logging in!'));
   }
 };
 

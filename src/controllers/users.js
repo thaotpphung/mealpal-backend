@@ -5,14 +5,15 @@ const User = require('../models/users.js');
 const Week = require('../models/weeks.js');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./index');
+const AppError = require('./../errors/AppError');
 
 exports.updateUser = factory.updateOne(User, 'userId');
 
 exports.getUser = catchAsync(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.userId);
 
   if (!user) {
-    return next(new AppError('Info not found', 404));
+    return next(new AppError('Resource not found', 404));
   }
   user.email = undefined;
 
