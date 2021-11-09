@@ -13,14 +13,29 @@ const app = require('./app');
 // db config
 let connectionUrl;
 const env = process.env.NODE_ENV;
+log.info('environment', process.env.NODE_ENV);
+
 switch (env) {
-  case 'develop':
+  case 'develop': {
+    log.info('connecting to develop db', process.env.MONGODB_DEVELOP);
     connectionUrl = process.env.MONGODB_DEVELOP;
-  case 'production':
+    break;
+  }
+  case 'production': {
+    log.info('connecting to production db', process.env.MONGODB_PRODUCTION);
     connectionUrl = process.env.MONGODB_PRODUCTION;
-  case 'local':
+    break;
+  }
+  case 'local': {
+    log.info('connecting to local db', process.env.MONGODB_LOCAL);
+    connectionUrl = process.env.MONGODB_LOCAL;
+    break;
+  }
+  default:
     connectionUrl = process.env.MONGODB_LOCAL;
 }
+
+log.info('connection url', connectionUrl);
 
 const PORT = process.env.PORT || 5000;
 
