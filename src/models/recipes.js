@@ -16,20 +16,20 @@ const recipeSchema = mongoose.Schema(
       default: '',
       maxlength: [100, 'Must have less or equal than 40 characters'],
     },
-    ingredients: {
-      type: [
-        {
+    ingredients: [
+      {
+        amount: {
           whole: { type: Number },
           numer: { type: Number },
           denom: { type: Number },
-          food: { type: String },
-          unit: {
-            label: { type: String },
-          },
         },
-      ],
-    },
-    instructions: { type: [String], default: ['[Step 1]'] },
+        ingredientName: { type: String },
+        unit: {
+          label: { type: String },
+        },
+      },
+    ],
+    instructions: { type: [String], default: [''] },
     calories: {
       type: Number,
       default: 0,
@@ -38,7 +38,6 @@ const recipeSchema = mongoose.Schema(
     servings: {
       type: Number,
       default: 0,
-      required: [true, 'Servings is required'],
     },
     time: {
       type: Number,
@@ -51,8 +50,9 @@ const recipeSchema = mongoose.Schema(
     recipeDiet: {
       type: String,
       maxlength: [40, 'Must have less or equal than 40 characters'],
+      default: '',
     },
-    recipeImage: { type: String },
+    recipeImage: { type: String, default: '' },
     updatedTime: {
       type: Date,
       default: Date.now,

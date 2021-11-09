@@ -12,7 +12,7 @@ exports.updateRecipe = factory.updateOne(Recipe);
 exports.getRecipe = factory.getOne(Recipe, {
   path: 'userId',
   model: 'User',
-  select: 'avatar',
+  select: ['avatar', 'username'],
 });
 exports.deleteRecipe = catchAsync(async (req, res, next) => {
   const doc = await Recipe.findByIdAndDelete(req.params.id);

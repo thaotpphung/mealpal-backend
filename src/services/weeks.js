@@ -37,7 +37,7 @@ exports.createWeek = async (week, userId) => {
   const populatedWeek = await Week.findById(newWeek._id).populate({
     path: 'userId',
     model: 'User',
-    select: 'avatar',
+    select: ['avatar', 'username'],
   });
   return populatedWeek;
 };

@@ -1,12 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 const User = require('../models/users.js');
 const authService = require('../services/auth.js');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('./../errors/AppError');
 const WeekService = require('../services/weeks.js');
-dotenv.config();
 
 const sendTokenResponse = (user, statusCode, message, req, res) => {
   user.password = undefined;
@@ -42,7 +40,8 @@ exports.register = catchAsync(async (req, res, next) => {
   const oldUser = await User.findOne({
     $or: [{ username }, { email }],
   }).exec();
-  if (oldUser) return next(new AppError('User already exists', 400));
+  if (oldUser)
+    return next(new AppError('Username and email must be unique', 400));
   // save user
   const hashedPassword = await bcrypt.hash(password, 12);
   const user = await User.create({

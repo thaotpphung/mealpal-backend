@@ -27,7 +27,7 @@ exports.getWeek = factory.getOne(Week, [
       populate: {
         path: 'food',
         model: 'Recipe',
-        select: 'recipeName',
+        select: ['recipeName', 'ingredients'],
       },
     },
   },

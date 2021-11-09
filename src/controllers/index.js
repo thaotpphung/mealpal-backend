@@ -76,7 +76,7 @@ exports.updateOne = (Model, param = '') =>
     res.status(200).json({
       status: 'success',
       data: null,
-      message: 'Info updated successfully',
+      message: 'Updated successfully',
     });
   });
 
