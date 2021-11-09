@@ -22,6 +22,8 @@ switch (env) {
     connectionUrl = process.env.MONGODB_LOCAL;
 }
 
+log.info('connection url', process.env.NODE_ENV + ': ' + connectionUrl);
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
