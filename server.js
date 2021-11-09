@@ -19,14 +19,17 @@ switch (env) {
   case 'develop': {
     log.info('connecting to develop db', process.env.MONGODB_DEVELOP);
     connectionUrl = process.env.MONGODB_DEVELOP;
+    break;
   }
   case 'production': {
     log.info('connecting to production db', process.env.MONGODB_PRODUCTION);
     connectionUrl = process.env.MONGODB_PRODUCTION;
+    break;
   }
   case 'local': {
     log.info('connecting to local db', process.env.MONGODB_LOCAL);
     connectionUrl = process.env.MONGODB_LOCAL;
+    break;
   }
   default:
     connectionUrl = process.env.MONGODB_LOCAL;
