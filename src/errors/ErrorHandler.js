@@ -40,7 +40,7 @@ module.exports = (err, req, res, next) => {
       message: error.message,
     });
   }
-  return res.status(error.statusCode).json({
+  return res.status(err.statusCode).json({
     status: err.status,
     data: null,
     message: 'Something went wrong, please contact admin!',
