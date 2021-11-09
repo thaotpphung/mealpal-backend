@@ -13,6 +13,8 @@ const app = require('./app');
 // db config
 let connectionUrl;
 const env = process.env.NODE_ENV;
+log.info('environment', process.env.NODE_ENV);
+
 switch (env) {
   case 'develop':
     connectionUrl = process.env.MONGODB_DEVELOP;
@@ -20,9 +22,11 @@ switch (env) {
     connectionUrl = process.env.MONGODB_PRODUCTION;
   case 'local':
     connectionUrl = process.env.MONGODB_LOCAL;
+  default:
+    connectionUrl = process.env.MONGODB_LOCAL;
 }
 
-log.info('connection url', process.env.NODE_ENV + ': ' + connectionUrl);
+log.info('connection url', connectionUrl);
 
 const PORT = process.env.PORT || 5000;
 
