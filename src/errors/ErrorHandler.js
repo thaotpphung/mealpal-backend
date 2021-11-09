@@ -1,4 +1,5 @@
 const AppError = require('./AppError');
+const log = require('npmlog');
 
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}.`;
@@ -24,6 +25,7 @@ const handleJWTExpiredError = () =>
   new AppError('Your token has expired! Please log in again.', 401);
 
 module.exports = (err, req, res, next) => {
+  log.error('Error Handlder', err);
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
   if (req.originalUrl.startsWith('/api')) {
