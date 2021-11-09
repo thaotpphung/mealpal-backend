@@ -10,9 +10,7 @@ const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
-
 const app = express();
-
 // SECURITY
 app.use(cors());
 
