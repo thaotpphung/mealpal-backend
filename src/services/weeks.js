@@ -1,13 +1,14 @@
 const Week = require('../models/weeks.js');
 
 createInitialDays = async () => {
-  const meals = ['Break Fast', 'Lunch', 'Dinner'];
+  const meals = ['Breakfast', 'Lunch', 'Dinner'];
   let initialMeals = [];
   meals.forEach((meal, idx) => {
     initialMeals.push({
       mealName: meal,
       order: idx,
       food: [],
+      calories: 0,
     });
   });
   const weekDays = [
@@ -24,6 +25,7 @@ createInitialDays = async () => {
     initialDays.push({
       dayName: day,
       meals: initialMeals,
+      calories: 0,
     });
   });
   return initialDays;
