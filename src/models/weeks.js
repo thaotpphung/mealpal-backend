@@ -15,7 +15,6 @@ const weekSchema = mongoose.Schema(
     days: [
       {
         dayName: { type: String },
-        calories: { type: Number, default: 0 },
         meals: [
           {
             mealName: { type: String },
@@ -25,7 +24,6 @@ const weekSchema = mongoose.Schema(
                 ref: 'Recipe',
               },
             ],
-            calories: { type: Number, default: 0 },
           },
         ],
       },

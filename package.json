@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js",
     "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js"
   },
   "keywords": [],
@@ -18,15 +18,20 @@
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.1.0",
     "express-rate-limit": "^5.5.0",
     "helmet": "^4.6.0",
+    "html-to-text": "^8.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.13",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.7.0",
     "nodemon": "^2.0.7",
     "npmlog": "^5.0.1",
+    "pug": "^3.0.2",
     "validator": "^13.6.0",
     "xss-clean": "^0.1.1"
   }

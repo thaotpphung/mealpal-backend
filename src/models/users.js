@@ -16,6 +16,7 @@ const userSchema = mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
+  isVerified: { type: Boolean, default: false },
   role: {
     type: String,
     enum: ['user', 'admin'],
@@ -34,6 +35,8 @@ const userSchema = mongoose.Schema({
   preferredDiet: { type: String, default: '' },
   caloGoal: { type: Number, default: 0 },
   avatar: { type: String, default: '' },
+  confirmEmailToken: { type: String, select: false },
+  confirmEmailTokenExpiresIn: { type: Date, select: false },
 });
 
 const User = mongoose.model('User', userSchema);

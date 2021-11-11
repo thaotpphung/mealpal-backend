@@ -1,4 +1,5 @@
 const Week = require('../models/weeks.js');
+const log = require('npmlog');
 
 createInitialDays = async () => {
   const meals = ['Breakfast', 'Lunch', 'Dinner'];

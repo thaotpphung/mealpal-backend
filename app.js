@@ -1,4 +1,6 @@
+const path = require('path');
 const express = require('express');
+const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
@@ -11,6 +13,15 @@ const userRoutes = require('./src/routes/users.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'src/views'));
+
+// Development logging
+if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+  app.use(morgan('dev'));
+}
+
 // SECURITY
 app.use(cors());
 
