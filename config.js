@@ -14,6 +14,7 @@ let MAILTRAP_HOST = process.env.MAILTRAP_HOST;
 let MAILTRAP_PORT = process.env.MAILTRAP_PORT;
 let MAILTRAP_USERNAME = process.env.MAILTRAP_USERNAME;
 let MAILTRAP_PASSWORD = process.env.MAILTRAP_PASSWORD;
+let NODE_ENV = process.env.NODE_ENV;
 
 switch (process.env.NODE_ENV) {
   case 'local': {
@@ -37,6 +38,7 @@ switch (process.env.NODE_ENV) {
 }
 
 module.exports = {
+  NODE_ENV,
   DB_CONNECTION,
   CLIENT_BASE_URL,
   PORT,

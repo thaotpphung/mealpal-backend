@@ -3,6 +3,7 @@ const catchAsync = require('../utils/catchAsync');
 const factory = require('./index');
 const AppError = require('./../errors/AppError');
 const APIFeatures = require('../utils/apiFeatures');
+const Email = require('../utils/email');
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   let user;
@@ -56,4 +57,30 @@ exports.getUser = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateAvatar = catchAsync(async (req, res) => {});
+// Send cart to user's email
+exports.sendCart = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.userId);
+  const response = await new Email(user).sendCart({
+    cart: req.body,
+    date: new Date().toLocaleString('default', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
+  });
+  if (response === 'success') {
+    res.status(200).json({
+      data: null,
+      status: 'success',
+      message:
+        'Your shopping list was successfully sent to your email, please check your inbox including spam folder',
+    });
+  } else {
+    return next(
+      new AppError(
+        'There was an error sending the email. Try again later!',
+        500
+      )
+    );
+  }
+});

@@ -53,6 +53,7 @@ module.exports = class Email {
       await this.newTransport().sendMail(mailOptions);
       return 'success';
     } catch (err) {
+      log.error('Error Sending Email', err);
       return err;
     }
   }
@@ -61,7 +62,7 @@ module.exports = class Email {
     return this.send('cart', 'Shopping Cart', cart);
   }
 
-  async sendConfirmationEmail(token) {
-    return this.send('confirmEmail', 'Confirm Email at MealPal', token);
+  async sendConfirmationEmail(url) {
+    return this.send('confirmEmail', 'Confirm Email at MealPal', url);
   }
 };
