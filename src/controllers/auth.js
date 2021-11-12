@@ -101,18 +101,21 @@ exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 3) Send it to user's email
-  try {
-    const confirmUrl = `${req.protocol}://${req.get(
-      'host'
-    )}/api/users/email/confirm/${token}`;
-    await new Email(user).sendConfirmationEmail(confirmUrl);
+  const confirmUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/users/email/confirm/${token}`;
+
+  const response = await new Email(user).sendConfirmationEmail(confirmUrl);
+
+  if (response === 'success') {
     res.status(200).json({
       data: null,
       status: 'success',
       message:
         'A confirmation code was sent to your email, please check your inbox including spam folder',
     });
-  } catch (err) {
+  } else {
+    log.error('Email Error', response);
     user.confirmEmailToken = undefined;
     user.confirmEmailTokenExpiresIn = undefined;
     await user.save();

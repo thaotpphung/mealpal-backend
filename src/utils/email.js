@@ -12,7 +12,16 @@ module.exports = class Email {
   }
 
   newTransport() {
-    // Sendgrid
+    if (config.NODE_ENV === 'local') {
+      return nodemailer.createTransport({
+        host: config.MAILTRAP_HOST,
+        port: config.MAILTRAP_PORT,
+        auth: {
+          user: config.MAILTRAP_USERNAME,
+          pass: config.MAILTRAP_PASSWORD,
+        },
+      });
+    }
     return nodemailer.createTransport({
       service: 'SendGrid',
       auth: {
@@ -40,14 +49,19 @@ module.exports = class Email {
       text: htmlToText.htmlToText(html),
     };
     // 3) Create a transport and send email
-    await this.newTransport().sendMail(mailOptions);
+    try {
+      await this.newTransport().sendMail(mailOptions);
+      return 'success';
+    } catch (err) {
+      return err;
+    }
   }
 
   async sendCart(cart) {
-    await this.send('cart', 'Shopping Cart', cart);
+    return this.send('cart', 'Shopping Cart', cart);
   }
 
   async sendConfirmationEmail(token) {
-    await this.send('confirmEmail', 'Confirm Email at MealPal', token);
+    return this.send('confirmEmail', 'Confirm Email at MealPal', token);
   }
 };
