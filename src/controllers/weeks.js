@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Week = require('../models/weeks.js');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./index');
@@ -35,10 +36,23 @@ exports.getWeek = factory.getOne(Week, [
 ]);
 
 exports.createWeek = catchAsync(async (req, res) => {
-  const newWeek = await WeekService.createWeek(req.body, req.userId);
-  res.status(201).json({
-    status: 'success',
-    data: newWeek,
-    message: 'Created successfully',
-  });
+  const callback = (data) => {
+    res.status(201).json({
+      status: 'success',
+      data: data,
+      message: 'Saved successfully',
+    });
+  };
+  let week;
+  if (req.body.weekId) {
+    week = await Week.findById(req.body.weekId).exec(function (err, doc) {
+      doc._id = mongoose.Types.ObjectId();
+      doc.isNew = true;
+      doc.userId = req.userId;
+      doc.save(callback(doc));
+    });
+  } else {
+    week = await WeekService.createWeek(req.body, req.userId);
+    callback(week);
+  }
 });

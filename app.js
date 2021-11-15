@@ -30,9 +30,10 @@ app.use(helmet());
 
 // limit requests from same API
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!',
+  max: 200, // start blocking after 200 requests
+  windowMs: 60 * 60 * 1000, // 1 hour window
+  message:
+    'Too many requests from this IP address, please try again in an hour!',
 });
 app.use('/api', limiter);
 

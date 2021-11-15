@@ -2,26 +2,25 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
-let DB_CONNECTION = '';
-let CLIENT_BASE_URL = '';
+let NODE_ENV = process.env.NODE_ENV;
+
+let DB_CONNECTION = process.env.MONGODB_LOCAL;
+let CLIENT_BASE_URL = process.env.CLIENT_BASE_URL_LOCAL;
 let PORT = process.env.PORT || 5000;
-let JWT_SECRET = process.env.JWT_SECRET || 'test';
+
+let JWT_SECRET = process.env.JWT_SECRET || 'local';
 let JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '365d';
+
 let SENDGRID_USERNAME = process.env.SENDGRID_USERNAME_DEVELOP;
 let SENDGRID_PASSWORD = process.env.SENDGRID_PASSWORD_DEVELOP;
 let EMAIL_FROM = process.env.EMAIL_FROM;
+
 let MAILTRAP_HOST = process.env.MAILTRAP_HOST;
 let MAILTRAP_PORT = process.env.MAILTRAP_PORT;
 let MAILTRAP_USERNAME = process.env.MAILTRAP_USERNAME;
 let MAILTRAP_PASSWORD = process.env.MAILTRAP_PASSWORD;
-let NODE_ENV = process.env.NODE_ENV;
 
 switch (process.env.NODE_ENV) {
-  case 'local': {
-    DB_CONNECTION = process.env.MONGODB_LOCAL;
-    CLIENT_BASE_URL = process.env.CLIENT_BASE_URL_LOCAL;
-    break;
-  }
   case 'develop': {
     DB_CONNECTION = process.env.MONGODB_DEVELOP;
     CLIENT_BASE_URL = process.env.CLIENT_BASE_URL_DEVELOP;

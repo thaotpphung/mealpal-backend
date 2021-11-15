@@ -9,6 +9,6 @@ exports.auth = async (req, res, next) => {
     req.userId = decodedData._id;
     next();
   } catch (error) {
-    return next(new AppError('Action requires logging in!'));
+    return next(new AppError('Action requires logging in!', 401));
   }
 };
