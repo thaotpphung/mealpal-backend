@@ -12,16 +12,6 @@ module.exports = class Email {
   }
 
   newTransport() {
-    if (config.NODE_ENV === 'local') {
-      return nodemailer.createTransport({
-        host: config.MAILTRAP_HOST,
-        port: config.MAILTRAP_PORT,
-        auth: {
-          user: config.MAILTRAP_USERNAME,
-          pass: config.MAILTRAP_PASSWORD,
-        },
-      });
-    }
     return nodemailer.createTransport({
       service: 'SendGrid',
       auth: {

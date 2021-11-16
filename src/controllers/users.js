@@ -73,7 +73,7 @@ exports.sendCart = catchAsync(async (req, res, next) => {
       data: null,
       status: 'success',
       message:
-        'Your shopping list was successfully sent to your email, please check your inbox including spam folder',
+        'Your shopping list was successfully sent to your email, please check your inbox',
     });
   } else {
     return next(
