@@ -1,0 +1,38 @@
+extends baseEmail
+
+block content
+  p Hi, #{firstName}
+
+  strong Here're your shopping cart of ##{payload.date}
+
+  ul
+  each ingredient, ingredientName in payload.cart
+    input(id=ingredientName type='checkbox' name=ingredientName value=ingredientName)
+    span(class='spacing')
+    label(for=ingredientName) 
+      each amount, unit in ingredient.units
+        =" ["
+        if amount.whole !== 0
+          span #{amount.whole}
+        =" "
+        if amount.numer !== 0
+          sup #{amount.numer} &frasl;
+        if amount.denom !== 1
+          sub #{amount.denom}
+        =" "
+        if unit !== 'none'
+          span #{unit}
+        ="] "
+      span of
+        strong  #{ingredientName} 
+      
+    br
+    br
+  
+  br
+
+
+  p If you have any question, please contact mealpal.help@gmail.com.
+  
+
+

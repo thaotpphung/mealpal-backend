@@ -9,13 +9,12 @@ const weekSchema = mongoose.Schema(
     weekDescription: { type: String, default: '' },
     userId: { type: String, required: true },
     weekTags: { type: [String], default: [] },
-    weekDiet: { type: String, required: [true, 'Week diet is required'] },
+    weekDiet: { type: String, default: '' },
     caloGoal: { type: Number, default: 0 },
-    planTag: { type: String },
+    planTag: { type: String, default: '' },
     days: [
       {
         dayName: { type: String },
-        calories: { type: Number, default: 0 },
         meals: [
           {
             mealName: { type: String },
@@ -25,7 +24,6 @@ const weekSchema = mongoose.Schema(
                 ref: 'Recipe',
               },
             ],
-            calories: { type: Number, default: 0 },
           },
         ],
       },

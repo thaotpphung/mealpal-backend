@@ -31,11 +31,25 @@ exports.deleteRecipe = catchAsync(async (req, res, next) => {
     message: 'Deleted successfully',
   });
 });
+
 exports.createRecipe = catchAsync(async (req, res) => {
-  const recipe = await RecipeService.createRecipe(req.body, req.userId);
-  res.status(201).json({
-    status: 'success',
-    data: recipe,
-    message: 'Created successfully',
-  });
+  const callback = (data) => {
+    res.status(201).json({
+      status: 'success',
+      data: data,
+      message: 'Saved successfully',
+    });
+  };
+  let recipe;
+  if (req.body.recipeId) {
+    recipe = await Recipe.findById(req.body.recipeId).exec(function (err, doc) {
+      doc._id = mongoose.Types.ObjectId();
+      doc.isNew = true;
+      doc.userId = req.userId;
+      doc.save(callback(doc));
+    });
+  } else {
+    recipe = await RecipeService.createRecipe(req.body, req.userId);
+    callback(recipe);
+  }
 });

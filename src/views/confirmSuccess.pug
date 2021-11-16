@@ -1,0 +1,10 @@
+doctype html
+html(lang='en')
+  head
+    title Redirect To MealPal
+    include _style
+  body
+    p.successMessage Thank you for confirming your email! 
+    a(href=`${redirectUrl}`, target='_blank') Go back to MealPal
+    p If verified status has not been updated, please try logging in again. 
+

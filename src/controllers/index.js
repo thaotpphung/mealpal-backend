@@ -17,7 +17,7 @@ exports.getAll = (Model) =>
     const doc = await features.query.populate({
       path: 'userId',
       model: 'User',
-      select: ['avatar', 'username'],
+      select: ['avatar', 'username', 'isVerified'],
     });
     res.status(200).json({
       status: 'success',
@@ -58,10 +58,10 @@ exports.createOne = (Model) =>
     });
   });
 
-exports.updateOne = (Model, param = '') =>
+exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(
-      param === '' ? req.params.id : req.params[param],
+      req.params.id,
       { $set: { ...req.body, updatedTime: new Date() } },
       {
         new: true,

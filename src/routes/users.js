@@ -16,7 +16,18 @@ router.patch(
   middlewares.auth,
   authController.changePassword
 );
+
+router.patch(
+  '/email/confirm',
+  middlewares.auth,
+  authController.sendConfirmationEmail
+);
+
+router.get('/email/confirm/:token', authController.confirmEmail);
+
 router.patch('/:userId', middlewares.auth, userController.updateUser);
 router.get('/:userId', userController.getUser);
+
+router.post('/:userId/cart', userController.sendCart);
 
 module.exports = router;
