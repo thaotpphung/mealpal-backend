@@ -59,7 +59,7 @@ module.exports = class Email {
   }
 
   async sendCart(cart) {
-    return this.send('cart', 'Shopping Cart', cart);
+    return this.send('cart', 'MealPal Shopping Cart', cart);
   }
 
   async sendConfirmationEmail(url) {
