@@ -9,9 +9,9 @@ const weekSchema = mongoose.Schema(
     weekDescription: { type: String, default: '' },
     userId: { type: String, required: true },
     weekTags: { type: [String], default: [] },
-    weekDiet: { type: String },
+    weekDiet: { type: String, default: '' },
     caloGoal: { type: Number, default: 0 },
-    planTag: { type: String },
+    planTag: { type: String, default: '' },
     days: [
       {
         dayName: { type: String },
