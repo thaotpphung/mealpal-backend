@@ -40,8 +40,8 @@ const recipeSchema = mongoose.Schema(
       default: 0,
     },
     time: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: '',
     },
     servingSize: {
       type: String,
