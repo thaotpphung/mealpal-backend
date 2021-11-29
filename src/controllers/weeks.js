@@ -12,6 +12,7 @@ exports.updateWeekByDay = catchAsync(async (req, res) => {
   const { id, dayIdx } = req.params;
   let week = await Week.findById(id);
   week.days[dayIdx] = req.body;
+  week.updatedTime = new Date();
   week.save();
   res.status(200).json({
     status: 'success',

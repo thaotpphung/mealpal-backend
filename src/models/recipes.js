@@ -52,7 +52,10 @@ const recipeSchema = mongoose.Schema(
       maxlength: [40, 'Must have less or equal than 40 characters'],
       default: '',
     },
-    recipeImage: { type: String, default: '' },
+    recipeImage: {
+      url: { type: String, default: '' },
+      publicId: { type: String, default: '' },
+    },
     updatedTime: {
       type: Date,
       default: Date.now,
