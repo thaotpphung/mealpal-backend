@@ -7,8 +7,6 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const app = require('./app');
-
 mongoose
   .connect(config.DB_CONNECTION, {
     useUnifiedTopology: true,
@@ -17,6 +15,8 @@ mongoose
     useFindAndModify: false,
   })
   .then(() => log.info(`DB connection successful`));
+
+const app = require('./app');
 
 const server = app.listen(config.PORT, () => {
   log.info(`App running on port ${config.PORT}`);

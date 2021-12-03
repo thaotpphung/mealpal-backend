@@ -52,36 +52,10 @@ app.use(xss());
 
 app.use(compression());
 
-// cloudinary configuration
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
 // ROUTES
 app.use('/api/users', userRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/recipes', recipeRoutes);
-
-// image upload API
-app.post('/api/upload', async (req, res) => {
-  try {
-    const fileStr = req.body.data;
-    const uploadResponse = await cloudinary.uploader.upload(fileStr);
-    res.status(200).json({
-      message: 'Upload successfully',
-      data: null,
-      status: 'success',
-    });
-  } catch (err) {
-    response.status(500).json({
-      status: 'error',
-      message: 'Something went wrong',
-      data: err,
-    });
-  }
-});
 
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');

@@ -2,14 +2,27 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 
 const userSchema = mongoose.Schema({
-  firstName: { type: String, required: [true, 'First name is required'] },
-  lastName: { type: String, required: [true, 'Last name is required'] },
+  firstName: {
+    type: String,
+    required: [true, 'First name is required'],
+    maxlength: [40, 'Must have less than or equal to 40 characters'],
+  },
+  lastName: {
+    type: String,
+    required: [true, 'Last name is required'],
+    maxlength: [40, 'Must have less than or equal to 40 characters'],
+  },
   username: {
     type: String,
     required: [true, 'Username is required'],
+    maxlength: [40, 'Must have less than or equal to 40 characters'],
     unique: true,
   },
-  bio: { type: String, default: '' },
+  bio: {
+    type: String,
+    default: '',
+    maxlength: [400, 'Must have less than or equal to 400 characters'],
+  },
   email: {
     type: String,
     unique: true,
@@ -33,7 +46,7 @@ const userSchema = mongoose.Schema({
     ref: 'Week',
   },
   preferredDiet: { type: String, default: '' },
-  caloGoal: { type: Number, default: 0 },
+  calories: { type: Number, default: 0 },
   avatar: { type: String, default: '' },
   confirmEmailToken: { type: String, select: false },
   confirmEmailTokenExpiresIn: { type: Date, select: false },

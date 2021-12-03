@@ -5,13 +5,51 @@ class APIFeatures {
   }
 
   filter() {
-    const queryObj = { ...this.queryString };
+    let queryObj = { ...this.queryString };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
     let queryStr = JSON.stringify(queryObj);
     // add $ for advanced filtering options to match MongoDB operator
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    this.query = this.query.find(JSON.parse(queryStr));
+    queryObj = JSON.parse(queryStr);
+    Object.entries(queryObj).forEach(([key, value]) => {
+      // array field: search include
+      if (key === 'tags') {
+        queryObj[key] = {
+          $all: value.split(','),
+        };
+        return;
+      }
+      if (key === 'ingredients') {
+        queryObj[key].ingredientName = {
+          $all: value.split(','),
+        };
+        return;
+      }
+      // number field: search in range
+      if (key === 'calories') {
+        if (!value.includes(',')) {
+          queryObj[key] = value;
+        } else {
+          const [min, max] = value
+            .split(',')
+            .map((num) => parseInt(num.trim()));
+          queryObj[key] = {
+            $lte: max || 1000000000,
+            $gte: min || 0,
+          };
+        }
+
+        return;
+      }
+      // text field: search contains
+      queryObj[key] = {
+        $regex: value,
+        $options: 'i',
+      };
+    });
+
+    this.query = this.query.find(queryObj);
     return this;
   }
 

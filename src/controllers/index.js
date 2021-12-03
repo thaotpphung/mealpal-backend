@@ -19,6 +19,7 @@ exports.getAll = (Model) =>
       model: 'User',
       select: ['avatar', 'username', 'isVerified'],
     });
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -60,6 +61,7 @@ exports.createOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    console.log(req.body);
     const doc = await Model.findByIdAndUpdate(
       req.params.id,
       { $set: { ...req.body, updatedTime: new Date() } },

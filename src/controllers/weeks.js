@@ -13,7 +13,7 @@ exports.updateWeekByDay = catchAsync(async (req, res) => {
   let week = await Week.findById(id);
   week.days[dayIdx] = req.body;
   week.updatedTime = new Date();
-  week.save();
+  await week.save();
   res.status(200).json({
     status: 'success',
     data: null,
@@ -27,9 +27,9 @@ exports.getWeek = factory.getOne(Week, [
     populate: {
       path: 'meals',
       populate: {
-        path: 'food',
+        path: 'recipes',
         model: 'Recipe',
-        select: ['recipeName', 'ingredients', 'calories'],
+        select: ['name', 'ingredients', 'calories'],
       },
     },
   },

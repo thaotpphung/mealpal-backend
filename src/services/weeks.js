@@ -8,6 +8,7 @@ createInitialDays = async () => {
     initialMeals.push({
       mealName: meal,
       order: idx,
+      recipes: [],
       food: [],
       calories: 0,
     });
