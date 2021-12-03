@@ -111,7 +111,7 @@ exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
       data: null,
       status: 'success',
       message:
-        'A confirmation code was sent to your email, please check your inbox',
+        'A confirmation code was sent to your email, please check your inbox, including Promotions, Spam, etc folder',
     });
   } else {
     user.confirmEmailToken = undefined;
