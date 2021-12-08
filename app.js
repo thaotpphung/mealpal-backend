@@ -1,8 +1,5 @@
 const path = require('path');
 const express = require('express');
-const { cloudinary } = require('./src/utils/cloudinary');
-
-// const cloudinary = require('cloudinary').v2;
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -15,13 +12,14 @@ const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
+const config = require('./config');
 const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'src/views'));
 
 // Development logging
-if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+if (config.NODE_ENV === 'develop' || config.NODE_ENV === 'local') {
   app.use(morgan('dev'));
 }
 
@@ -38,7 +36,8 @@ const limiter = rateLimit({
   message:
     'Too many requests from this IP address, please try again in an hour!',
 });
-app.use('/api', limiter);
+
+config.NODE_ENV !== 'local' && app.use('/api', limiter);
 
 // body paser, reading data from body into req body
 app.use(express.urlencoded({ limit: '30mb', extended: true }));

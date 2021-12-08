@@ -62,6 +62,7 @@ const recipeSchema = mongoose.Schema(
       default: Date.now,
     },
     tags: { type: [String], default: [] },
+    likeCount: { type: Number, default: 0 },
   },
   {
     toJSON: { virtuals: true },

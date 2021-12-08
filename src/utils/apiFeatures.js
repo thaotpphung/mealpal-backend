@@ -77,12 +77,14 @@ class APIFeatures {
   }
 
   paginate() {
-    // * 1 : to convert a string to a number, || 1 : by default we want number 1
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 100;
+    // * 1 : to convert a string to a number, || 0 : by default we want number 0
+    let page = parseInt(this.queryString.page);
+    let limit = parseInt(this.queryString.limit);
     // skip: the number of documents to skip (to current page)
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
+    if (!Number.isNaN(page) && !Number.isNaN(limit)) {
+      const skip = page * limit;
+      this.query = this.query.skip(skip).limit(limit);
+    }
     return this;
   }
 }

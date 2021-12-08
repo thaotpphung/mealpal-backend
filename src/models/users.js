@@ -45,6 +45,8 @@ const userSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Week',
   },
+  weekView: { type: String, default: 'board' },
+  recipeView: { type: String, default: 'board' },
   preferredDiet: { type: String, default: '' },
   calories: { type: Number, default: 0 },
   avatar: { type: String, default: '' },

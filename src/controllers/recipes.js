@@ -1,5 +1,5 @@
 const express = require('express');
-const sharp = require('sharp');
+const User = require('../models/users.js');
 const mongoose = require('mongoose');
 const { cloudinary } = require('../utils/cloudinary');
 const Recipe = require('../models/recipes.js');
@@ -11,8 +11,7 @@ const factory = require('./index');
 const RecipeService = require('../services/recipes.js');
 
 exports.getAllRecipes = factory.getAll(Recipe);
-
-// exports.updateRecipe = factory.updateOne(Recipe);
+exports.deleteRecipes = factory.deleteMany(Recipe);
 
 exports.updateRecipe = catchAsync(async (req, res, next) => {
   // check for recipeImage change
@@ -55,11 +54,9 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
       runValidators: true,
     }
   );
-
   if (!recipe) {
     return next(new AppError('Resource not found', 404));
   }
-
   res.status(200).json({
     status: 'success',
     data: { recipeImage: recipe.recipeImage },
@@ -72,17 +69,16 @@ exports.getRecipe = factory.getOne(Recipe, {
   model: 'User',
   select: ['avatar', 'username'],
 });
+
 exports.deleteRecipe = catchAsync(async (req, res, next) => {
   const doc = await Recipe.findByIdAndDelete(req.params.id);
   await Week.updateMany(
     { userId: req.params.userId },
     { $pull: [{ 'days.$.meals': { _id: req.params.id } }] }
   );
-
   if (!doc) {
     return next(new AppError('Resource not found', 404));
   }
-
   res.status(200).json({
     status: 'success',
     data: null,
@@ -100,10 +96,17 @@ exports.createRecipe = catchAsync(async (req, res) => {
   };
   let recipe;
   if (req.body.recipeId) {
-    recipe = await Recipe.findById(req.body.recipeId).exec(function (err, doc) {
+    recipe = await Recipe.findById(req.body.recipeId).exec(async function (
+      err,
+      doc
+    ) {
       doc._id = mongoose.Types.ObjectId();
       doc.isNew = true;
-      doc.userId = req.userId;
+      const user = await User.findById(req.userId).select({
+        username: 1,
+        avatar: 1,
+      });
+      doc.userId = user;
       doc.save(callback(doc));
     });
   } else {

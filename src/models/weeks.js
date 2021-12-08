@@ -20,16 +20,17 @@ const weekSchema = mongoose.Schema(
       min: 0,
       max: [10000, 'Must be less than or equal to 10000'],
     },
+    likeCount: { type: Number, default: 0 },
     days: [
       {
-        dayName: {
+        name: {
           type: String,
           required: true,
           maxlength: [40, 'Must have less than or equal to 40 characters'],
         },
         meals: [
           {
-            mealName: {
+            name: {
               type: String,
               required: true,
               maxlength: [40, 'Must have less than or equal to 40 characters'],
