@@ -6,7 +6,13 @@ class APIFeatures {
 
   filter() {
     let queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    let queryTypes;
+    try {
+      queryTypes = JSON.parse(queryObj.queryTypes);
+    } catch (error) {
+      queryTypes = queryObj.queryTypes;
+    }
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'queryTypes'];
     excludedFields.forEach((el) => delete queryObj[el]);
     let queryStr = JSON.stringify(queryObj);
     // add $ for advanced filtering options to match MongoDB operator
@@ -14,7 +20,7 @@ class APIFeatures {
     queryObj = JSON.parse(queryStr);
     Object.entries(queryObj).forEach(([key, value]) => {
       // array field: search include
-      if (key === 'tags') {
+      if (queryTypes[key] === 'array') {
         queryObj[key] = {
           $all: value.split(','),
         };
@@ -27,7 +33,7 @@ class APIFeatures {
         return;
       }
       // number field: search in range
-      if (key === 'calories') {
+      if (queryTypes[key] === 'number') {
         if (!value.includes(',')) {
           queryObj[key] = value;
         } else {
@@ -39,7 +45,6 @@ class APIFeatures {
             $gte: min || 0,
           };
         }
-
         return;
       }
       // text field: search contains
@@ -48,7 +53,6 @@ class APIFeatures {
         $options: 'i',
       };
     });
-
     this.query = this.query.find(queryObj);
     return this;
   }

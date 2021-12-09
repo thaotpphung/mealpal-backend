@@ -86,18 +86,15 @@ exports.changePassword = catchAsync(async (req, res, next) => {
   sendTokenResponse(user, 200, 'Successfully changed password', req, res);
 });
 
-// send confirmation token to user's email
+// send confirmation email with token
 exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
   // 1) Get user email
   const user = await User.findById(req.userId).select(['email', 'firstName']);
 
   // 2) Generate the random reset token
   const token = crypto.randomBytes(32).toString('hex');
-  user.confirmEmailToken = crypto
-    .createHash('sha256')
-    .update(token)
-    .digest('hex');
-  user.confirmEmailTokenExpiresIn = Date.now() + 10 * 60 * 1000;
+  user.utilToken = crypto.createHash('sha256').update(token).digest('hex');
+  user.utilTokenExpiresIn = Date.now() + 10 * 60 * 1000;
   await user.save();
 
   // 3) Send it to user's email
@@ -114,8 +111,8 @@ exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
         'A confirmation code was sent to your email, please check your inbox, including Promotions, Spam, etc folder',
     });
   } else {
-    user.confirmEmailToken = undefined;
-    user.confirmEmailTokenExpiresIn = undefined;
+    user.utilToken = undefined;
+    user.utilTokenExpiresIn = undefined;
     await user.save();
     return next(
       new AppError('There was an error sending the email. Try again later!'),
@@ -124,7 +121,7 @@ exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
   }
 });
 
-// when user send patch request with token
+// after user send valid confirm token, reset email
 exports.confirmEmail = catchAsync(async (req, res, next) => {
   // 1) Get user based on the token
   const hashedToken = crypto
@@ -133,8 +130,8 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
     .digest('hex');
 
   const user = await User.findOne({
-    confirmEmailToken: hashedToken,
-    confirmEmailTokenExpiresIn: { $gt: Date.now() },
+    utilToken: hashedToken,
+    utilTokenExpiresIn: { $gt: Date.now() },
   });
 
   // 2) If token has not expired, and there is user, set email user verified
@@ -144,8 +141,8 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
     });
   }
 
-  user.confirmEmailToken = undefined;
-  user.confirmEmailTokenExpiresIn = undefined;
+  user.utilToken = undefined;
+  user.utilTokenExpiresIn = undefined;
   user.isVerified = true;
   await user.save();
 
@@ -155,4 +152,70 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
     firstName: user.firstName,
     redirectUrl,
   });
+});
+
+// send reset password email wtih token
+exports.sendResetPasswordEmail = catchAsync(async (req, res, next) => {
+  // 1) Get user email
+  const user = await User.findById(req.userId).select(['email', 'firstName']);
+
+  // 2) Generate the random reset token
+  const token = crypto.randomBytes(32).toString('hex');
+  user.utilToken = crypto.createHash('sha256').update(token).digest('hex');
+  user.utilTokenExpiresIn = Date.now() + 10 * 60 * 1000;
+  await user.save();
+
+  // 3) Send it to user's email
+  const confirmUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/users/email/confirm/${token}`;
+
+  const response = await new Email(user).sendConfirmationEmail(confirmUrl);
+  if (response === 'success') {
+    res.status(200).json({
+      data: null,
+      status: 'success',
+      message:
+        'A message was sent to your email for password reset instruction, please check your inbox, including Promotions, Spam, etc folder',
+    });
+  } else {
+    user.utilToken = undefined;
+    user.utilTokenExpiresIn = undefined;
+    const hashedPassword = await bcrypt.hash(password, 12);
+    await user.save();
+    return next(
+      new AppError('There was an error sending the email. Try again later!'),
+      500
+    );
+  }
+});
+
+// after user send validtoken, reset password
+exports.resetPassword = catchAsync(async (req, res, next) => {
+  const { password } = req.body;
+  // 1) Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    utilToken: hashedToken,
+    utilTokenExpiresIn: { $gt: Date.now() },
+  });
+
+  // 2) If token has not expired, and there is user, set new password
+  if (!user) {
+    res.status(400).render('error', {
+      message: 'Token is invalid or has expired',
+    });
+  }
+
+  user.utilToken = undefined;
+  user.utilTokenExpiresIn = undefined;
+  const hashedPassword = await bcrypt.hash(password, 12);
+  user.password = hashedPassword;
+  await user.save();
+
+  sendTokenResponse(user, 200, 'Successfully reset password', req, res);
 });

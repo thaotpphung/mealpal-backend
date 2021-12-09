@@ -50,8 +50,8 @@ const userSchema = mongoose.Schema({
   preferredDiet: { type: String, default: '' },
   calories: { type: Number, default: 0 },
   avatar: { type: String, default: '' },
-  confirmEmailToken: { type: String, select: false },
-  confirmEmailTokenExpiresIn: { type: Date, select: false },
+  utilToken: { type: String, select: false },
+  utilTokenExpiresIn: { type: Date, select: false },
 });
 
 const User = mongoose.model('User', userSchema);
