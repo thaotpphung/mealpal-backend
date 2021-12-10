@@ -1,8 +1,5 @@
 const path = require('path');
 const express = require('express');
-const { cloudinary } = require('./src/utils/cloudinary');
-
-// const cloudinary = require('cloudinary').v2;
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -13,15 +10,17 @@ const cors = require('cors');
 const AppError = require('./src/errors/AppError');
 const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
+const indexRoutes = require('./src/routes/index.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
+const config = require('./config');
 const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'src/views'));
 
 // Development logging
-if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+if (config.NODE_ENV === 'develop' || config.NODE_ENV === 'local') {
   app.use(morgan('dev'));
 }
 
@@ -38,7 +37,8 @@ const limiter = rateLimit({
   message:
     'Too many requests from this IP address, please try again in an hour!',
 });
-app.use('/api', limiter);
+
+config.NODE_ENV !== 'local' && app.use('/api', limiter);
 
 // body paser, reading data from body into req body
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
@@ -52,36 +52,11 @@ app.use(xss());
 
 app.use(compression());
 
-// cloudinary configuration
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
 // ROUTES
 app.use('/api/users', userRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/recipes', recipeRoutes);
-
-// image upload API
-app.post('/api/upload', async (req, res) => {
-  try {
-    const fileStr = req.body.data;
-    const uploadResponse = await cloudinary.uploader.upload(fileStr);
-    res.status(200).json({
-      message: 'Upload successfully',
-      data: null,
-      status: 'success',
-    });
-  } catch (err) {
-    response.status(500).json({
-      status: 'error',
-      message: 'Something went wrong',
-      data: err,
-    });
-  }
-});
+app.use('/api', indexRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');

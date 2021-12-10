@@ -7,13 +7,14 @@ const WeekService = require('../services/weeks.js');
 exports.getAllWeeks = factory.getAll(Week);
 exports.deleteWeek = factory.deleteOne(Week);
 exports.updateWeek = factory.updateOne(Week);
+exports.deleteWeeks = factory.deleteMany(Week);
 
 exports.updateWeekByDay = catchAsync(async (req, res) => {
   const { id, dayIdx } = req.params;
   let week = await Week.findById(id);
   week.days[dayIdx] = req.body;
   week.updatedTime = new Date();
-  week.save();
+  await week.save();
   res.status(200).json({
     status: 'success',
     data: null,
@@ -27,9 +28,9 @@ exports.getWeek = factory.getOne(Week, [
     populate: {
       path: 'meals',
       populate: {
-        path: 'food',
+        path: 'recipes',
         model: 'Recipe',
-        select: ['recipeName', 'ingredients', 'calories'],
+        select: ['name', 'ingredients', 'calories'],
       },
     },
   },
@@ -46,11 +47,25 @@ exports.createWeek = catchAsync(async (req, res) => {
   };
   let week;
   if (req.body.weekId) {
-    week = await Week.findById(req.body.weekId).exec(function (err, doc) {
+    week = await Week.findById(req.body.weekId).exec(async function (err, doc) {
       doc._id = mongoose.Types.ObjectId();
       doc.isNew = true;
-      doc.userId = req.userId;
-      doc.save(callback(doc));
+      await doc.save();
+      const week = await Week.findById(doc._id).populate([
+        {
+          path: 'days',
+          populate: {
+            path: 'meals',
+            populate: {
+              path: 'recipes',
+              model: 'Recipe',
+              select: ['name', 'ingredients', 'calories'],
+            },
+          },
+        },
+        { path: 'userId', model: 'User', select: ['avatar', 'username'] },
+      ]);
+      callback(week);
     });
   } else {
     week = await WeekService.createWeek(req.body, req.userId);
