@@ -5,13 +5,55 @@ class APIFeatures {
   }
 
   filter() {
-    const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    let queryObj = { ...this.queryString };
+    let queryTypes;
+    try {
+      queryTypes = JSON.parse(queryObj.queryTypes);
+    } catch (error) {
+      queryTypes = queryObj.queryTypes;
+    }
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'queryTypes'];
     excludedFields.forEach((el) => delete queryObj[el]);
     let queryStr = JSON.stringify(queryObj);
     // add $ for advanced filtering options to match MongoDB operator
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    this.query = this.query.find(JSON.parse(queryStr));
+    queryObj = JSON.parse(queryStr);
+    Object.entries(queryObj).forEach(([key, value]) => {
+      // array field: search include
+      if (queryTypes[key] === 'array') {
+        queryObj[key] = {
+          $all: value.split(','),
+        };
+        return;
+      }
+      if (key === 'ingredients') {
+        queryObj[key].ingredientName = {
+          $all: value.split(','),
+        };
+        return;
+      }
+      // number field: search in range
+      if (queryTypes[key] === 'number') {
+        if (!value.includes(',')) {
+          queryObj[key] = value;
+        } else {
+          const [min, max] = value
+            .split(',')
+            .map((num) => parseInt(num.trim()));
+          queryObj[key] = {
+            $lte: max || 1000000000,
+            $gte: min || 0,
+          };
+        }
+        return;
+      }
+      // text field: search contains
+      queryObj[key] = {
+        $regex: value,
+        $options: 'i',
+      };
+    });
+    this.query = this.query.find(queryObj);
     return this;
   }
 
@@ -39,12 +81,14 @@ class APIFeatures {
   }
 
   paginate() {
-    // * 1 : to convert a string to a number, || 1 : by default we want number 1
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 100;
+    // * 1 : to convert a string to a number, || 0 : by default we want number 0
+    let page = parseInt(this.queryString.page);
+    let limit = parseInt(this.queryString.limit);
     // skip: the number of documents to skip (to current page)
-    const skip = (page - 1) * limit;
-    this.query = this.query.skip(skip).limit(limit);
+    if (!Number.isNaN(page) && !Number.isNaN(limit)) {
+      const skip = page * limit;
+      this.query = this.query.skip(skip).limit(limit);
+    }
     return this;
   }
 }

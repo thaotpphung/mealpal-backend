@@ -6,15 +6,15 @@ const recipeSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
-    recipeName: {
+    name: {
       type: String,
       required: [true, 'Recipe name is required'],
       maxlength: [40, 'Must have less or equal than 40 characters'],
     },
-    recipeDescription: {
+    description: {
       type: String,
       default: '',
-      maxlength: [100, 'Must have less or equal than 40 characters'],
+      maxlength: [200, 'Must have less or equal than 200 characters'],
     },
     ingredients: [
       {
@@ -22,6 +22,7 @@ const recipeSchema = mongoose.Schema(
           whole: { type: Number },
           numer: { type: Number },
           denom: { type: Number },
+          toString: { type: String },
         },
         ingredientName: { type: String },
         unit: {
@@ -52,11 +53,16 @@ const recipeSchema = mongoose.Schema(
       maxlength: [40, 'Must have less or equal than 40 characters'],
       default: '',
     },
-    recipeImage: { type: String, default: '' },
+    recipeImage: {
+      url: { type: String, default: '' },
+      publicId: { type: String, default: '' },
+    },
     updatedTime: {
       type: Date,
       default: Date.now,
     },
+    tags: { type: [String], default: [] },
+    likeCount: { type: Number, default: 0 },
   },
   {
     toJSON: { virtuals: true },

@@ -6,8 +6,9 @@ createInitialDays = async () => {
   let initialMeals = [];
   meals.forEach((meal, idx) => {
     initialMeals.push({
-      mealName: meal,
+      name: meal,
       order: idx,
+      recipes: [],
       food: [],
       calories: 0,
     });
@@ -24,7 +25,7 @@ createInitialDays = async () => {
   let initialDays = [];
   weekDays.forEach((day) => {
     initialDays.push({
-      dayName: day,
+      name: day,
       meals: initialMeals,
       calories: 0,
     });

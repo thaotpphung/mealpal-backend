@@ -8,7 +8,7 @@ block content
   ul
   each ingredient, ingredientName in payload.cart
     input(id=ingredientName type='checkbox' name=ingredientName value=ingredientName)
-    span(class='spacing')
+    span
     label(for=ingredientName) 
       each amount, unit in ingredient.units
         =" ["
@@ -25,9 +25,11 @@ block content
         ="] "
       span of
         strong  #{ingredientName} 
-    div  
-      each val, key in ingredient.recipes 
-        span #{val}#{", "}
+    div
+      each val, index in ingredient.recipes 
+        span #{val}
+        if index !== ingredient.recipes.length - 1 
+          =", "
       
     br
     br

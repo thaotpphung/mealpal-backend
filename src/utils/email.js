@@ -3,6 +3,7 @@ const log = require('npmlog');
 const pug = require('pug');
 const htmlToText = require('html-to-text');
 const config = require('./../../config');
+const juice = require('juice');
 
 module.exports = class Email {
   constructor(user) {
@@ -34,12 +35,12 @@ module.exports = class Email {
   // Send the actual email
   async send(template, subject, payload = {}) {
     // 1) Render HTML based on a pug template
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+    let html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
       firstName: this.firstName,
       payload,
       subject,
     });
-
+    html = juice(html, { removeStyleTags: true, preserveMediaQueries: true });
     // 2) Define email options
     const mailOptions = {
       from: this.from,
@@ -59,10 +60,14 @@ module.exports = class Email {
   }
 
   async sendCart(cart) {
-    return this.send('cart', 'MealPal Shopping Cart', cart);
+    return this.send('cart', 'Shopping Cart at MealPal', cart);
   }
 
   async sendConfirmationEmail(url) {
-    return this.send('confirmEmail', 'Confirm Email at MealPal', url);
+    return this.send('confirmEmail', 'Email Confirmation at MealPal', url);
+  }
+
+  async sendResetPasswordEmail(url) {
+    return this.send('resetPassword', 'Password Reset at MealPal', url);
   }
 };

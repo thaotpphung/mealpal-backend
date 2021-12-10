@@ -10,15 +10,17 @@ const cors = require('cors');
 const AppError = require('./src/errors/AppError');
 const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
+const indexRoutes = require('./src/routes/index.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
+const config = require('./config');
 const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'src/views'));
 
 // Development logging
-if (process.env.NODE_ENV === 'develop' || process.env.NODE_ENV === 'local') {
+if (config.NODE_ENV === 'develop' || config.NODE_ENV === 'local') {
   app.use(morgan('dev'));
 }
 
@@ -35,7 +37,8 @@ const limiter = rateLimit({
   message:
     'Too many requests from this IP address, please try again in an hour!',
 });
-app.use('/api', limiter);
+
+config.NODE_ENV !== 'local' && app.use('/api', limiter);
 
 // body paser, reading data from body into req body
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
@@ -53,6 +56,8 @@ app.use(compression());
 app.use('/api/users', userRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api', indexRoutes);
+
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');
 });

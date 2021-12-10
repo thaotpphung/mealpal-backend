@@ -7,9 +7,11 @@ exports.createRecipe = async (recipe, userId) => {
         whole: 0,
         numer: 0,
         denom: 1,
+        toString: '',
       },
       ingredientName: '',
-      unit: { label: '' },
+      unit: { label: 'none' },
+      calPerUnit: 0,
     },
   ];
   const newRecipe = await Recipe.create({
