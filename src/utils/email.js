@@ -64,6 +64,10 @@ module.exports = class Email {
   }
 
   async sendConfirmationEmail(url) {
-    return this.send('confirmEmail', 'Confirm Email at MealPal', url);
+    return this.send('confirmEmail', 'Email Confirmation', url);
+  }
+
+  async sendResetPasswordEmail(url) {
+    return this.send('resetPassword', 'Password Reset', url);
   }
 };

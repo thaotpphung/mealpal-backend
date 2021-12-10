@@ -10,6 +10,7 @@ const cors = require('cors');
 const AppError = require('./src/errors/AppError');
 const globalErrorHandler = require('./src/errors/ErrorHandler');
 const userRoutes = require('./src/routes/users.js');
+const indexRoutes = require('./src/routes/index.js');
 const weekRoutes = require('./src/routes/weeks.js');
 const recipeRoutes = require('./src/routes/recipes.js');
 const config = require('./config');
@@ -55,6 +56,7 @@ app.use(compression());
 app.use('/api/users', userRoutes);
 app.use('/api/weeks', weekRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api', indexRoutes);
 
 app.get('/', (req, res) => {
   res.send('Welcome to MealPal API!');

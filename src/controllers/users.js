@@ -7,12 +7,15 @@ const Email = require('../utils/email');
 
 exports.updateUser = catchAsync(async (req, res, next) => {
   let user;
-  if (req.body.email) {
+  let { email, oldPassword, password, confirmPassword } = req.body;
+  // reset email
+  if (email) {
     user = await User.findOne(req.body);
     if (!!user) {
       return next(new AppError(`Email must be unique`, 404));
     }
   }
+  // update info
   user = await User.findByIdAndUpdate(
     req.userId,
     { $set: { ...req.body, updatedTime: new Date() } },
@@ -24,11 +27,11 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('Resource not found', 404));
   }
-  if (req.body.email) {
+  // set email to not verified after successfully changed email
+  if (email) {
     user.isVerified = false;
-    user.save();
+    await user.save();
   }
-
   res.status(200).json({
     status: 'success',
     data: user,

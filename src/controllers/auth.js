@@ -68,8 +68,9 @@ exports.register = catchAsync(async (req, res, next) => {
   sendTokenResponse(user, 200, 'Successfully signed up', req, res);
 });
 
-exports.changePassword = catchAsync(async (req, res, next) => {
+exports.updatePassword = catchAsync(async (req, res, next) => {
   const { oldPassword, password, confirmPassword } = req.body;
+
   // check if password match
   if (password !== confirmPassword) {
     return new AppError("Password doesn't match", 400);
@@ -83,11 +84,13 @@ exports.changePassword = catchAsync(async (req, res, next) => {
   const hashedPassword = await bcrypt.hash(password, 12);
   user.password = hashedPassword;
   await user.save();
+  user.password = undefined;
+
   sendTokenResponse(user, 200, 'Successfully changed password', req, res);
 });
 
 // send confirmation email with token
-exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
+exports.confirmEmail = catchAsync(async (req, res, next) => {
   // 1) Get user email
   const user = await User.findById(req.userId).select(['email', 'firstName']);
 
@@ -122,7 +125,7 @@ exports.sendConfirmationEmail = catchAsync(async (req, res, next) => {
 });
 
 // after user send valid confirm token, reset email
-exports.confirmEmail = catchAsync(async (req, res, next) => {
+exports.resetEmail = catchAsync(async (req, res, next) => {
   // 1) Get user based on the token
   const hashedToken = crypto
     .createHash('sha256')
@@ -155,9 +158,12 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
 });
 
 // send reset password email wtih token
-exports.sendResetPasswordEmail = catchAsync(async (req, res, next) => {
+exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get user email
-  const user = await User.findById(req.userId).select(['email', 'firstName']);
+  const user = await User.findOne({ email: req.body.email }).select([
+    'email',
+    'firstName',
+  ]);
 
   // 2) Generate the random reset token
   const token = crypto.randomBytes(32).toString('hex');
@@ -166,22 +172,19 @@ exports.sendResetPasswordEmail = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 3) Send it to user's email
-  const confirmUrl = `${req.protocol}://${req.get(
-    'host'
-  )}/api/users/email/confirm/${token}`;
+  const redirectUrl = `${config.CLIENT_BASE_URL}/password/reset/${token}`;
 
-  const response = await new Email(user).sendConfirmationEmail(confirmUrl);
+  const response = await new Email(user).sendResetPasswordEmail(redirectUrl);
   if (response === 'success') {
     res.status(200).json({
       data: null,
       status: 'success',
       message:
-        'A message was sent to your email for password reset instruction, please check your inbox, including Promotions, Spam, etc folder',
+        'A link for password reset has been sent to your email, please check your inbox, including Promotions, Spam, etc folder',
     });
   } else {
     user.utilToken = undefined;
     user.utilTokenExpiresIn = undefined;
-    const hashedPassword = await bcrypt.hash(password, 12);
     await user.save();
     return next(
       new AppError('There was an error sending the email. Try again later!'),
@@ -206,9 +209,12 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 2) If token has not expired, and there is user, set new password
   if (!user) {
-    res.status(400).render('error', {
-      message: 'Token is invalid or has expired',
-    });
+    return next(
+      new AppError(
+        'Rest token is invalid or has expired, please try again later',
+        400
+      )
+    );
   }
 
   user.utilToken = undefined;
@@ -217,5 +223,6 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.password = hashedPassword;
   await user.save();
 
+  user.password = undefined;
   sendTokenResponse(user, 200, 'Successfully reset password', req, res);
 });
