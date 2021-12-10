@@ -13,37 +13,43 @@ const RecipeService = require('../services/recipes.js');
 exports.getAllRecipes = factory.getAll(Recipe);
 exports.deleteRecipes = factory.deleteMany(Recipe);
 
+const changeImage = async (req, res, next) => {
+  // delete existing image
+  const recipe = await Recipe.findById(req.params.id);
+  if (recipe.recipeImage.url) {
+    cloudinary.uploader.destroy(
+      recipe.recipeImage.publicId,
+      function (error, result) {
+        if (error) {
+          return next(
+            new AppError('Error when processing image, please try again', 500)
+          );
+        }
+      }
+    );
+  }
+  if (!recipe) {
+    return next(new AppError('Resource not found', 404));
+  }
+  // upload new image
+  // 1. resize image
+  const image = await resizeBase64(req.body.recipeImage);
+  // 2. upload image to cloudinary
+  const uploadResponse = await cloudinary.uploader.upload(image);
+  // 3. save url string to recipe image
+  req.body.recipeImage = {
+    url: uploadResponse.secure_url,
+    publicId: uploadResponse.public_id,
+  };
+  return recipe;
+};
+
 exports.updateRecipe = catchAsync(async (req, res, next) => {
   // check for recipeImage change
   let recipe;
+  // change image
   if (req.body.recipeImage) {
-    // delete existing image
-    recipe = await Recipe.findById(req.params.id);
-    if (recipe.recipeImage.url) {
-      cloudinary.uploader.destroy(
-        recipe.recipeImage.publicId,
-        function (error, result) {
-          if (error) {
-            return next(
-              new AppError('Error when processing image, please try again', 500)
-            );
-          }
-        }
-      );
-    }
-    if (!recipe) {
-      return next(new AppError('Resource not found', 404));
-    }
-    // upload new image
-    // 1. resize image
-    const image = await resizeBase64(req.body.recipeImage);
-    // 2. upload image to cloudinary
-    const uploadResponse = await cloudinary.uploader.upload(image);
-    // 3. save url string to recipe image
-    req.body.recipeImage = {
-      url: uploadResponse.secure_url,
-      publicId: uploadResponse.public_id,
-    };
+    recipe = await changeImage(req, res, next);
   }
   // update recipe
   recipe = await Recipe.findByIdAndUpdate(
