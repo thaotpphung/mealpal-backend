@@ -103,7 +103,7 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
   // 3) Send it to user's email
   const confirmUrl = `${req.protocol}://${req.get(
     'host'
-  )}/api/users/email/confirm/${token}`;
+  )}/api/email/confirm/${token}`;
 
   const response = await new Email(user).sendConfirmationEmail(confirmUrl);
   if (response === 'success') {
