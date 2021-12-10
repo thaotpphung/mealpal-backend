@@ -60,14 +60,14 @@ module.exports = class Email {
   }
 
   async sendCart(cart) {
-    return this.send('cart', 'MealPal Shopping Cart', cart);
+    return this.send('cart', 'Shopping Cart at MealPal', cart);
   }
 
   async sendConfirmationEmail(url) {
-    return this.send('confirmEmail', 'Email Confirmation', url);
+    return this.send('confirmEmail', 'Email Confirmation at MealPal', url);
   }
 
   async sendResetPasswordEmail(url) {
-    return this.send('resetPassword', 'Password Reset', url);
+    return this.send('resetPassword', 'Password Reset at MealPal', url);
   }
 };
