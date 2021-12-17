@@ -19,10 +19,8 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Development logging
-if (config.NODE_ENV === 'develop' || config.NODE_ENV === 'local') {
-  app.use(morgan('dev'));
-}
+// Logging
+app.use(morgan('dev'));
 
 // SECURITY
 app.use(cors());
@@ -38,7 +36,9 @@ const limiter = rateLimit({
     'Too many requests from this IP address, please try again in an hour!',
 });
 
-config.NODE_ENV !== 'local' && app.use('/api', limiter);
+if (config.NODE_ENV !== 'local') {
+  app.use('/api', limiter);
+}
 
 // body paser, reading data from body into req body
 app.use(express.urlencoded({ limit: '30mb', extended: true }));
