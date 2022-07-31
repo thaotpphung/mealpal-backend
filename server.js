@@ -1,37 +1,31 @@
-const mongoose = require('mongoose');
-const log = require('npmlog');
-const config = require('./config');
+const express = require('express');
+const { setup } = require('./di-setup');
+const apiErrorHandler = require('./src/error/api-error-handler');
 
-process.on('uncaughtException', (err) => {
-  log.error('UncaughtException', err);
-  process.exit(1);
-});
+setup();
+const router = require('./src/routes');
 
-mongoose
-  .connect(config.DB_CONNECTION, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-  })
-  .then(() => log.info(`DB connection successful`));
+class Server {
+  constructor() {
+    this.app = express();
+    this.setup();
+  }
 
-const app = require('./app');
+  setup() {
+    this.app.use(express.json());
+    this.app.use('/', router);
+    this.app.use(apiErrorHandler);
+  }
 
-const server = app.listen(config.PORT, () => {
-  log.info(`App running on port ${config.PORT}`);
-});
+  run(port) {
+    this.server = this.app.listen(port, () => {
+      console.log(`server running on port ${port}`);
+    });
+  }
 
-process.on('unhandledRejection', (err) => {
-  log.error('UNHANDLED REJECTION!', err);
-  server.close(() => {
-    process.exit(1);
-  });
-});
+  stop(done) {
+    this.server.close(done);
+  }
+}
 
-process.on('SIGTERM', () => {
-  log.error('👋 SIGTERM RECEIVED. Shutting down gracefully');
-  server.close(() => {
-    log.error('💥 Process terminated!');
-  });
-});
+module.exports = Server;

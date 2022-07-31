@@ -1,41 +1,32 @@
 {
-  "name": "server",
+  "name": "node-dependency-injection",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
-    "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "ndb server.js"
+    "test": "mocha --recursive",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "cloudinary": "^1.27.1",
-    "compression": "^1.7.4",
-    "cors": "^2.8.5",
-    "crypto": "^1.0.1",
-    "dotenv": "^8.2.0",
+    "@hapi/joi": "^17.1.1",
+    "awilix": "^4.2.6",
+    "convict": "^6.0.0",
     "express": "^4.17.1",
-    "express-mongo-sanitize": "^2.1.0",
-    "express-rate-limit": "^5.5.0",
-    "helmet": "^4.6.0",
-    "html-to-text": "^8.1.0",
-    "jsonwebtoken": "^8.5.1",
-    "juice": "^8.0.0",
-    "mongoose": "^5.11.13",
-    "morgan": "^1.10.0",
-    "nodemailer": "^6.7.0",
-    "nodemon": "^2.0.7",
-    "npmlog": "^5.0.1",
-    "pug": "^3.0.2",
-    "sharp": "^0.29.3",
-    "validator": "^13.6.0",
-    "xss-clean": "^0.1.1"
+    "inversify": "^5.0.5",
+    "knex": "^0.21.1",
+    "pg": "^8.2.1",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "mocha": "^7.1.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   }
 }
