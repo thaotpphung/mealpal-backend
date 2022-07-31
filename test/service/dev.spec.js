@@ -1,5 +1,5 @@
 const assert = require('assert').strict;
-const DevService = require('../../service/dev');
+const DevService = require('../../src/service/dev');
 
 describe('devService', () => {
   describe('sanitizes names', () => {
