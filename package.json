@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
     "test:unit": "NODE_ENV=test:unit mocha test/unit/*spec.js",
     "test": "NODE_ENV=test mocha --recursive --exit",
-    "dev": "NODE_ENV=development nodemon index.js",
-    "migrate": "knex migrate:latest"
+    "db:run": "knex migrate:latest",
+    "db:reset": "NODE_ENV=development knex migrate:rollback && NODE_ENV=development knex migrate:latest",
+    "dev": "NODE_ENV=development nodemon index.js"
   },
   "keywords": [],
   "author": "",
