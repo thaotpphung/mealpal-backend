@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --recursive",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test:unit": "NODE_ENV=test:unit mocha test/unit/*spec.js",
+    "test": "NODE_ENV=test mocha --recursive --exit",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "migrate": "knex migrate:latest"
   },
   "keywords": [],
   "author": "",
@@ -14,12 +16,15 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "awilix": "^4.2.6",
+    "chai": "^4.3.6",
     "convict": "^6.0.0",
+    "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "inversify": "^5.0.5",
     "knex": "^0.21.1",
     "pg": "^8.2.1",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "winston": "^3.8.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

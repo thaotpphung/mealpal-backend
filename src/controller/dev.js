@@ -3,7 +3,6 @@ const ApiError = require('../error/api-error');
 class DevController {
   constructor({ devService }) {
     this.devService = devService;
-
     this.createDev = this.createDev.bind(this);
     this.getDev = this.getDev.bind(this);
   }
